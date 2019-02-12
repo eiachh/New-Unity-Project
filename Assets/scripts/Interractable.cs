@@ -88,7 +88,7 @@ public class Interractable : MonoBehaviour
 
             ///Print row by row
             ///
-            if (customizeableText == null || customizeableText == "")
+            if (string.IsNullOrEmpty(customizeableText))
             {
                 divide(TextToPrint);
             }
@@ -99,8 +99,10 @@ public class Interractable : MonoBehaviour
             }
         ///Print row by row
         alreadyInterracted = true;
-        text.text = listToPrint[currentIndexOfList];
-        currentIndexOfList++;
+
+        ///Create coroutine that appends text to text object character by character
+        StartCoroutine(AnimateText(listToPrint[currentIndexOfList], 0.05f));
+        
 
         text.fontSize = 48;
             text.alignment = TextAnchor.MiddleCenter;
@@ -117,13 +119,34 @@ public class Interractable : MonoBehaviour
 
             return true;
     }
+
+    IEnumerator AnimateText(string textanimation, float speed)
+    {
+        //Empty the current text object and check if the next dialogue is needed or current one has been skipped
+        text.text = "";
+        foreach (char letter in textanimation)
+        {
+            if(listToPrint[currentIndexOfList] != textanimation || text.text == textanimation)
+            {
+                yield break;
+            }
+            text.text += letter;
+            yield return new WaitForSeconds(speed);
+        }
+    }
     protected virtual bool nextDialog(Npc_Script caller)
     {
+        currentIndexOfList++;
+        if(text.text != listToPrint[currentIndexOfList-1])
+        {
+            currentIndexOfList--;
+            text.text = listToPrint[currentIndexOfList];
+            return true;
+        }
         if (currentIndexOfList < listToPrint.Count && listToPrint[0] != "")
         {
             alreadyInterracted = true;
-            text.text = listToPrint[currentIndexOfList];
-            currentIndexOfList++;
+            StartCoroutine(AnimateText(listToPrint[currentIndexOfList], 0.05f));
             return true;
         }
         else

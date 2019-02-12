@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Character_Script : MonoBehaviour
@@ -30,9 +31,9 @@ public class Character_Script : MonoBehaviour
     }
 
     //calculates which interractable object is closer to the character and returns the index of the closer one for further interraction
-    private int decideFromInterractionList()
+    private Interractable decideFromInterractionList()
     {
-        int ret = -1;
+        Interractable ret = null;
 
         int ind = 0;
         float min = 90000.0f;
@@ -42,7 +43,7 @@ public class Character_Script : MonoBehaviour
             if (min > temp)
             {
                 min = temp;
-                ret = ind;
+                ret = item;
             }
             ind++;
         }
@@ -55,25 +56,25 @@ public class Character_Script : MonoBehaviour
         
         if (Input.GetKeyDown(KeyCode.F))
         {
+            var item = decideFromInterractionList();
             if (!isInterracting)
             {
-                openedInterractionIndex = decideFromInterractionList();
-                if (openedInterractionIndex >= 0)
+                if (item != null)
                 {
-                    isInterracting = interractablesUpClose[openedInterractionIndex].Interract();
+                    isInterracting = item.Interract();
                     rigigbody2D.velocity = new Vector2(0, 0);
                 }
             }
             else
             {
-                isInterracting = interractablesUpClose[openedInterractionIndex].nextDialog();
+                isInterracting = item.nextDialog();
             }
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isInterracting)
             {
-                interractablesUpClose[openedInterractionIndex].interruptMessage();
+                interractablesUpClose.Find(x => x.Equals(decideFromInterractionList())).interruptMessage();
             }
             isInterracting = false;
         }

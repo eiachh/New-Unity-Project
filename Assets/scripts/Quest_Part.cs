@@ -7,7 +7,7 @@ public class Quest_Part : MonoBehaviour
 {
     //public Quest_Handler QH;
     //public Npc_Script startingNpc;
-    public Npc_Script targetNpc;
+    public Npc_Script Questtarget;
     //public string questID;
 
     //public bool availableByDefault = false;
@@ -16,6 +16,7 @@ public class Quest_Part : MonoBehaviour
     //public bool startingPointOfTheQuest = false;
 
     public string NpcQuestText;
+    public bool IsFinished = false;
     //public string NpcQuestEndText;
     // Start is called before the first frame update
     

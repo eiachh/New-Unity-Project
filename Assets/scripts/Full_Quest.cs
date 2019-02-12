@@ -27,7 +27,7 @@ public class Full_Quest : MonoBehaviour
 
     public Npc_Script getTargetNpc()
     {
-        return questParts[questState].targetNpc;
+        return questParts[questState].Questtarget;
     }
 
     public bool getVisibleMark()
@@ -49,8 +49,8 @@ public class Full_Quest : MonoBehaviour
         else
         {
             questState++;
-            var asd = questParts[questState].targetNpc;
-            questParts[questState].targetNpc.addActiveQuest(questID, questParts[questState].visibleMark);
+            var asd = questParts[questState].Questtarget;
+            questParts[questState].Questtarget.addActiveQuest(questID, questParts[questState].visibleMark);
             return false;
         }
     }
