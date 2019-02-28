@@ -14,6 +14,8 @@ public class Full_Quest : MonoBehaviour
     public bool completedQuest = false;
     public string questID;
 
+    public Canvas QuestCompletedUI;
+
 
     void Start()
     {
@@ -43,14 +45,14 @@ public class Full_Quest : MonoBehaviour
     {
         if (questState == questParts.Count-1)
         {
+            QuestCompletedUI.enabled = true;
             completedQuest = true;
             return true;
         }
         else
         {
             questState++;
-            var asd = questParts[questState].Questtarget;
-            questParts[questState].Questtarget.addActiveQuest(questID, questParts[questState].visibleMark);
+            questParts[questState].PrepareQuestPart(questID);
             return false;
         }
     }

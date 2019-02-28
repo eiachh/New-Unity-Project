@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEngine;
 
 public class Character_Script : MonoBehaviour
@@ -14,12 +15,19 @@ public class Character_Script : MonoBehaviour
     //public GameObject target2;
     bool isInterracting = false;
     int openedInterractionIndex;
-
-    
+    Battle_Handler BattleH;
+    bool characterInBattle=false;
 
     List<Interractable> interractablesUpClose = new List<Interractable>();
 
-    public void addForInterraction(Interractable x)
+
+    void Start()
+    {
+        BattleH = FindObjectOfType<Battle_Handler>();
+        BattleH.BattleStarted += Battle_Has_Started;
+        BattleH.BattleFinished += Battle_Has_Finished;
+    }
+        public void addForInterraction(Interractable x)
     {
         interractablesUpClose.Add(x);
     }
@@ -82,10 +90,22 @@ public class Character_Script : MonoBehaviour
         }
     }
 
+    public void Battle_Has_Started(object sender,EventArgs e)
+    {
+        characterInBattle = true;
+    }
+    public void Battle_Has_Finished(object sender, EventArgs e)
+    {
+        characterInBattle = false;
+    }
+
     void FixedUpdate()
     {
-       
-        if (!isInterracting)
+        if (characterInBattle)
+        {
+
+        }
+        else if (!isInterracting)
         {
             float moveH = Input.GetAxis("Horizontal");
             float moveV = Input.GetAxis("Vertical");
