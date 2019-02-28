@@ -15,6 +15,8 @@ public class Character_Script : MonoBehaviour
     bool isInterracting = false;
     int openedInterractionIndex;
 
+    
+
     List<Interractable> interractablesUpClose = new List<Interractable>();
 
     public void addForInterraction(Interractable x)

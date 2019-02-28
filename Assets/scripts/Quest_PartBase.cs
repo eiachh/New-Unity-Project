@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Quest_Part : MonoBehaviour
+public class Quest_PartBase : MonoBehaviour
 {
     //public Quest_Handler QH;
     //public Npc_Script startingNpc;
+    
     public Npc_Script Questtarget;
     //public string questID;
 

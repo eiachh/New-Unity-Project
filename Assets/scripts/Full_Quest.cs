@@ -7,7 +7,7 @@ public class Full_Quest : MonoBehaviour
 {
     Quest_Handler QH;
 
-    public List<Quest_Part> questParts = new List<Quest_Part>();
+    public List<Quest_PartBase> questParts = new List<Quest_PartBase>();
     int questState = 0;
 
     public bool availableByDefault = false;
