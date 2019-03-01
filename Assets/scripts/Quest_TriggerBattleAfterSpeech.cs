@@ -7,6 +7,8 @@ public class Quest_TriggerBattleAfterSpeech : Quest_PartBase
 {
     Battle_Handler BattleH;
     Quest_Handler QH;
+    public List<User_Battle_Unit> friendlyParty;
+    public List<Enemy_Base> enemiesToFight;
 
     string questID;
     void Start()
@@ -22,7 +24,7 @@ public class Quest_TriggerBattleAfterSpeech : Quest_PartBase
     public override void PrepareQuestPart(string _questID)
     {
         questID = _questID;
-        BattleH.initiateBattle();
+        BattleH.initiateBattle(friendlyParty,enemiesToFight);
     }
 
     public void Battle_Has_Finished(object sender, EventArgs e)
