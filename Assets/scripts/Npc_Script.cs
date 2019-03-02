@@ -54,7 +54,7 @@ public class Npc_Script : Interractable
         return base.nextDialog(this);
     }
 
-        public void addAvailableQuest(string ID,bool visibleMark)
+    public void addAvailableQuest(string ID, bool visibleMark)
     {
         availableQuestIDs.Add(new Tuple<string, bool>(ID, visibleMark));
         if (visibleMark)

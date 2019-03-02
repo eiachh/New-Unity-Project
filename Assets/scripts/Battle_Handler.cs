@@ -7,6 +7,17 @@ using UnityEngine.SceneManagement;
 
 public class Battle_Handler : MonoBehaviour
 {
+    public class DamageRecievedEventArgs : EventArgs
+    {
+        public int RecievedDamage { get; set; }
+        public bool Cancel { get; set; }
+        public DamageRecievedEventArgs(int rec=0, bool cancel=false)
+        {
+            RecievedDamage = rec;
+            Cancel = cancel;
+        }
+    }
+
     public delegate void BattleStartedEventHandler(object sender, EventArgs e);
     public event BattleStartedEventHandler BattleStarted;
 
@@ -14,7 +25,7 @@ public class Battle_Handler : MonoBehaviour
     public event BattleFinishedEventHandler BattleFinished;
 
     public delegate void DamageRecievedEventHandler(object sender, EventArgs e);
-    public event DamageRecievedEventHandler DamageRecieved;
+    public event EventHandler<DamageRecievedEventArgs> DamageRecieved;
 
     public Canvas BattleUI;
     public Text HpDisplayingText;
@@ -69,6 +80,7 @@ public class Battle_Handler : MonoBehaviour
         BattleUI.enabled = true;
 
         nextTurn();
+        
         BattleStarted(this, EventArgs.Empty);
     }
     private void nextTurn()
@@ -152,7 +164,13 @@ public class Battle_Handler : MonoBehaviour
     //returns If player died to the dmg recieved
     public bool RecieveDamage_ToCurrentlyActivePartyMember(int amount)
     {
-        activeCharacter.CurrentHealth = activeCharacter.CurrentHealth - amount;
+        DamageRecievedEventArgs e = new DamageRecievedEventArgs();
+        DamageRecieved(this, e);
+        if (!e.Cancel)
+        {
+            activeCharacter.CurrentHealth = activeCharacter.CurrentHealth - amount;
+        }
+        
         if (activeCharacter.CurrentHealth <= 0)
         {
             activeCharacter.isAlive = false;

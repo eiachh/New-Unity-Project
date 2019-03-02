@@ -17,7 +17,7 @@ public class Full_Quest : MonoBehaviour
     public Canvas QuestCompletedUI;
 
 
-    void Start()
+    void Awake()
     {
         QH = FindObjectOfType<Quest_Handler>();
         QH.QuestListInitializeFinished += register;

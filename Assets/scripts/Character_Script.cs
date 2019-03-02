@@ -32,7 +32,7 @@ public class Character_Script : MonoBehaviour
         var temp = FindObjectOfType<WorldPositionHolder>();
         Vector3 vect = new Vector3(temp.x, temp.y, temp.z);
         gameObject.transform.position = vect;
-        DontDestroyOnLoad(this.gameObject);
+        
     }
     /*void LateUpdate()
     {

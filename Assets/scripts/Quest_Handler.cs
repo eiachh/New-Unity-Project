@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public class Quest_Handler : MonoBehaviour
@@ -14,34 +15,49 @@ public class Quest_Handler : MonoBehaviour
     public delegate void QuestListInitializeFinishedEventHandler(object sender, EventArgs args);
     public event QuestListInitializeFinishedEventHandler QuestListInitializeFinished;
 
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        DontDestroyOnLoad(this.gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
         //QuestListInitializeFinished(EventArgs.Empty);
         //Calling the event so the quests can initialize themselves
-        QuestListInitializeFinished(this, EventArgs.Empty);
-        handleAvailableQuests();
+        if (QuestListInitializeFinished != null)
+        {
+            QuestListInitializeFinished(this, EventArgs.Empty);
+            handleAvailableQuests();
+        }
+    }
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (QuestListInitializeFinished != null)
+        {
+            QuestListInitializeFinished(this, EventArgs.Empty);
+            handleAvailableQuests();
+        }
     }
 
     //after initializing the lists the QuestListInitializeFinished event fires and tells all the single_quests to register themselfes this lets you create quests from editor
-    public void addToQuestList(Full_Quest x, bool defaultAvailable,bool completed)
+    public void addToQuestList(Full_Quest x, bool defaultAvailable, bool completed)
     {
-        allQuestList.Add(x);
-        if (defaultAvailable==true && completed==false)
+        if (x != null)
         {
-            availableQuestList.Add(x);
+            allQuestList.Add(x);
+            if (defaultAvailable == true && completed == false)
+            {
+                availableQuestList.Add(x);
+            }
         }
     }
 
 
-
+    //Need fix if its not a talking quest this will throw an error (even tho before battle you probably want to talk) Questionable
     private void handleAvailableQuests()
     {
         foreach (var item in availableQuestList)
         {
             item.getTargetNpc().addAvailableQuest(item.questID, item.getVisibleMark());
-
         }
     }
 
@@ -70,10 +86,13 @@ public class Quest_Handler : MonoBehaviour
         var temp = availableQuestList.Find(x => x.questID == ID);
         if (temp != null)
         {
+
             // temp.getTargetNpc().addActiveQuest(temp.questID, temp.getVisibleMark());
             temp.taskCompleted();
             activeQuestList.Add(temp);
+            
             availableQuestList.Remove(temp);
+
         }
     }
     public void taskCompletedWithID(string ID)
