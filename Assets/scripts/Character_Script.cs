@@ -27,6 +27,20 @@ public class Character_Script : MonoBehaviour
         BattleH.BattleStarted += Battle_Has_Started;
         BattleH.BattleFinished += Battle_Has_Finished;
     }
+    void Awake()
+    {
+        var temp = FindObjectOfType<WorldPositionHolder>();
+        Vector3 vect = new Vector3(temp.x, temp.y, temp.z);
+        gameObject.transform.position = vect;
+        DontDestroyOnLoad(this.gameObject);
+    }
+    /*void LateUpdate()
+    {
+        Camera temp = FindObjectOfType<Camera>();
+        Vector3 distance = new Vector3(0, 0, -100);
+        temp.transform.position = this.transform.position+distance;
+    }*/
+
         public void addForInterraction(Interractable x)
     {
         interractablesUpClose.Add(x);

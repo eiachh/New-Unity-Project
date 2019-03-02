@@ -24,7 +24,8 @@ public class Quest_TriggerBattleAfterSpeech : Quest_PartBase
     public override void PrepareQuestPart(string _questID)
     {
         questID = _questID;
-        BattleH.initiateBattle(friendlyParty,enemiesToFight);
+
+        BattleH.initiateBattleAtPremadeArena(friendlyParty,enemiesToFight);
     }
 
     public void Battle_Has_Finished(object sender, EventArgs e)

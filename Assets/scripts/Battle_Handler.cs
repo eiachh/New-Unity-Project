@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Battle_Handler : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class Battle_Handler : MonoBehaviour
     float countBackForNextTurnStart = -1;
 
 
+    //its retarded... BUT IT WORKS
     void Update()
     {
         if (countBackForNextTurnStart > 0)
@@ -35,19 +37,36 @@ public class Battle_Handler : MonoBehaviour
             countBackForNextTurnStart -= Time.deltaTime;
         }
         //FIX THIS REEEE
-        if (countBackForNextTurnStart <= 0)
+        if (countBackForNextTurnStart <= 0 && countBackForNextTurnStart!=-1)
         {
+            countBackForNextTurnStart = -1;
             nextTurn();
         }
     }
 
-   public void initiateBattle(List<User_Battle_Unit> _friendlies,List<Enemy_Base> _enemies)
+    void Awake()
     {
+        DontDestroyOnLoad(this.gameObject);
+    }
 
-
-        BattleUI.enabled = true;
+   public void initiateBattleAtLocation(List<User_Battle_Unit> _friendlies,List<Enemy_Base> _enemies)
+    {
         friendlies = _friendlies;
         enemies = _enemies;
+
+        BattleUI.enabled = true;
+
+        nextTurn();
+        BattleStarted(this, EventArgs.Empty);
+    }
+    public void initiateBattleAtPremadeArena(List<User_Battle_Unit> _friendlies, List<Enemy_Base> _enemies)
+    {
+        SceneManager.LoadScene("testscene");
+
+        friendlies = _friendlies;
+        enemies = _enemies;
+
+        BattleUI.enabled = true;
 
         nextTurn();
         BattleStarted(this, EventArgs.Empty);
@@ -151,7 +170,7 @@ public class Battle_Handler : MonoBehaviour
     private void turnEnding()
     {
         refreshIndicatorBars();
-        countBackForNextTurnStart = 3.0f;
+        countBackForNextTurnStart = 1.5f;
     }
 
     //temporary end fight event
