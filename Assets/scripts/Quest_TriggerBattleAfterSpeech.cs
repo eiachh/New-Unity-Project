@@ -7,7 +7,7 @@ public class Quest_TriggerBattleAfterSpeech : Quest_PartBase
 {
     Battle_Handler BattleH;
     Quest_Handler QH;
-    List<User_Battle_Unit> friendlyParty;
+    List<User_Battle_Unit> friendlyParty= new List<User_Battle_Unit>();
     public List<User_Battle_Unit> additionalControllablePartyMembers;
     public List<Enemy_Base> enemiesToFight;
 

@@ -26,9 +26,17 @@ public class Npc_Script : Interractable
 
         questQuestionMarkPic = (GameObject)Resources.Load("prefabs/Quest_Questionmark", typeof(GameObject));
         questExclamation = (GameObject)Resources.Load("prefabs/Quest_Exclamation", typeof(GameObject));
-       
+
+        var loading_screen = FindObjectOfType<Loading_Screen>();
+        loading_screen.BeforeSceneChange += destroyUI;
+
         delayRefresh = false;
         refreshMarks();
+    }
+
+    private void destroyUI(object sender,EventArgs e)
+    {
+        //fix this
     }
 
     public override bool Interract() 

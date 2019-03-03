@@ -8,11 +8,12 @@ public class Full_Quest : MonoBehaviour
     Quest_Handler QH;
 
     public List<Quest_PartBase> questParts = new List<Quest_PartBase>();
-    int questState = 0;
+    public int QuestState { get; set; } = 0;
 
     public bool availableByDefault = false;
     public bool completedQuest = false;
     public string questID;
+    public string prerequisiteQuestID="none";
 
     public Canvas QuestCompletedUI;
 
@@ -29,21 +30,22 @@ public class Full_Quest : MonoBehaviour
 
     public Npc_Script getTargetNpc()
     {
-        return questParts[questState].Questtarget;
+        return questParts[QuestState].Questtarget;
     }
 
     public bool getVisibleMark()
     {
-        return questParts[questState].visibleMark;
+        return questParts[QuestState].visibleMark;
     }
 
     public string getNpcText()
     {
-        return questParts[questState].NpcQuestText;
+        return questParts[QuestState].NpcQuestText;
     }
     public bool taskCompleted()
     {
-        if (questState == questParts.Count-1)
+        //the bool is never used YET in references
+        if (QuestState == questParts.Count-1)
         {
             QuestCompletedUI.enabled = true;
             completedQuest = true;
@@ -51,9 +53,21 @@ public class Full_Quest : MonoBehaviour
         }
         else
         {
-            questState++;
-            questParts[questState].PrepareQuestPart(questID);
+            QuestState++;
+            
+            questParts[QuestState].PrepareQuestPart(questID);
             return false;
         }
+    }
+    public void OnLoadSetup(int _state)
+    {
+        QuestState = _state;
+        if (QuestState == questParts.Count - 1)
+        {
+            QuestCompletedUI.enabled = true;
+            completedQuest = true;
+            return;
+        }
+        questParts[QuestState].PrepareQuestPart(questID);
     }
 }

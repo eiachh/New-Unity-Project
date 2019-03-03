@@ -165,7 +165,10 @@ public class Battle_Handler : MonoBehaviour
     public bool RecieveDamage_ToCurrentlyActivePartyMember(int amount)
     {
         DamageRecievedEventArgs e = new DamageRecievedEventArgs();
-        DamageRecieved(this, e);
+        if (DamageRecieved != null)
+        {
+            DamageRecieved(this, e);
+        }
         if (!e.Cancel)
         {
             activeCharacter.CurrentHealth = activeCharacter.CurrentHealth - amount;

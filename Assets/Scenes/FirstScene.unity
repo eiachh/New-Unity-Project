@@ -360,7 +360,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 404177843}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.29, y: 0.33, z: 20}
+  m_LocalPosition: {x: 0.32, y: 10.23, z: 20}
   m_LocalScale: {x: 11.375, y: 1, z: 1}
   m_Children:
   - {fileID: 1515129837}
@@ -873,6 +873,53 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &808668008
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 808668010}
+  - component: {fileID: 808668009}
+  m_Layer: 0
+  m_Name: Part3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &808668009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808668008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 093687041e124dd4ab3810dd8698a4e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Questtarget: {fileID: 2142945054}
+  visibleMark: 1
+  NpcQuestText: very Well
+  IsFinished: 0
+--- !u!4 &808668010
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808668008}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1597442578}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &971380623
 GameObject:
   m_ObjectHideFlags: 0
@@ -920,7 +967,6 @@ MonoBehaviour:
   visibleMark: 1
   NpcQuestText: why Is thius here
   IsFinished: 0
-  friendlyParty: []
   additionalControllablePartyMembers: []
   enemiesToFight:
   - {fileID: 3192715493886658432}
@@ -1634,10 +1680,12 @@ MonoBehaviour:
   questParts:
   - {fileID: 1788712912}
   - {fileID: 1073213957}
+  - {fileID: 808668009}
   - {fileID: 971380625}
   availableByDefault: 1
   completedQuest: 0
   questID: ID1
+  prerequisiteQuestID: none
   QuestCompletedUI: {fileID: 0}
 --- !u!4 &1597442578
 Transform:
@@ -1653,6 +1701,7 @@ Transform:
   - {fileID: 1788712911}
   - {fileID: 1073213956}
   - {fileID: 971380624}
+  - {fileID: 808668010}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1812,6 +1861,75 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1887273723755775237
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1887273723158593659, guid: fab2ed823d871904082f639a9afe3950,
+        type: 3}
+      propertyPath: m_Name
+      value: Portal
+      objectReference: {fileID: 0}
+    - target: {fileID: 1887273723158593671, guid: fab2ed823d871904082f639a9afe3950,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1887273723158593671, guid: fab2ed823d871904082f639a9afe3950,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4.33
+      objectReference: {fileID: 0}
+    - target: {fileID: 1887273723158593671, guid: fab2ed823d871904082f639a9afe3950,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.4375
+      objectReference: {fileID: 0}
+    - target: {fileID: 1887273723158593671, guid: fab2ed823d871904082f639a9afe3950,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1887273723158593671, guid: fab2ed823d871904082f639a9afe3950,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1887273723158593671, guid: fab2ed823d871904082f639a9afe3950,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1887273723158593671, guid: fab2ed823d871904082f639a9afe3950,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1887273723158593671, guid: fab2ed823d871904082f639a9afe3950,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1887273723158593671, guid: fab2ed823d871904082f639a9afe3950,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1887273723158593671, guid: fab2ed823d871904082f639a9afe3950,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1887273723158593671, guid: fab2ed823d871904082f639a9afe3950,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fab2ed823d871904082f639a9afe3950, type: 3}
 --- !u!1001 &3192715493886658431
 PrefabInstance:
   m_ObjectHideFlags: 0

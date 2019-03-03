@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class Loading_Screen : MonoBehaviour
 {
@@ -10,7 +11,15 @@ public class Loading_Screen : MonoBehaviour
     public Text LoadingText;
     bool alreadyEntered = false;
 
+
+    public string SceneToLoad = "FirstScene";
+
     public Canvas UI_LoadingScreen;
+
+    public delegate void BeforeSceneChangeEventHandler(object sender, EventArgs e);
+    public event BeforeSceneChangeEventHandler BeforeSceneChange;
+
+    public float timeToWait = 1.5f;
 
     // Start is called before the first frame update
     void Start()
@@ -27,12 +36,30 @@ public class Loading_Screen : MonoBehaviour
             LoadingText.text = "Loading Done!";
            // SceneManager.LoadScene("FirstScene");
         }
-        else if (counter>1.5f && alreadyEntered==false)
+        else if (counter>timeToWait && alreadyEntered==false)
         {
             alreadyEntered = true;
             UI_LoadingScreen.enabled = false;
-            SceneManager.LoadScene("FirstScene");
+            SceneManager.LoadScene(SceneToLoad);
 
         }
+    }
+
+    public void teleportTo(string _scene)
+    {
+        if (BeforeSceneChange!=null)
+        {
+            BeforeSceneChange(this, EventArgs.Empty);
+        }
+        SceneToLoad = _scene;
+        resetUI();
+        counter = 0;
+    }
+
+    private void resetUI()
+    {
+        alreadyEntered = false;
+        LoadingText.text = "Loading..";
+        UI_LoadingScreen.enabled = true;
     }
 }

@@ -383,7 +383,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LoadingText: {fileID: 1735844041}
+  SceneToLoad: FirstScene
   UI_LoadingScreen: {fileID: 653448544}
+  timeToWait: 0.2
 --- !u!1 &790356411
 GameObject:
   m_ObjectHideFlags: 0
