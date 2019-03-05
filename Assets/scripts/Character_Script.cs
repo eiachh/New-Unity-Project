@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Character_Script : MonoBehaviour
 {
@@ -32,7 +33,13 @@ public class Character_Script : MonoBehaviour
         var temp = FindObjectOfType<WorldPositionHolder>();
         Vector3 vect = new Vector3(temp.x, temp.y, temp.z);
         gameObject.transform.position = vect;
-        
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        interractablesUpClose.Clear();
     }
     /*void LateUpdate()
     {

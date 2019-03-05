@@ -12,28 +12,37 @@ public class Quest_TriggerBattleAfterSpeech : Quest_PartBase
     public List<Enemy_Base> enemiesToFight;
 
     string questID;
-    void Start()
+    void Awake()
     {
+
         BattleH= FindObjectOfType<Battle_Handler>();
         QH = FindObjectOfType<Quest_Handler>();
+
 
         var temp = FindObjectOfType<Unique_Party>();
         friendlyParty.AddRange(temp.ControllablePartyMembers);
         friendlyParty.AddRange(additionalControllablePartyMembers);
 
-        BattleH.BattleFinished += Battle_Has_Finished;
+        //BattleH.BattleFinished += Battle_Has_Finished;
     }
 
-    public override void PrepareQuestPart(string _questID)
+    public override void PrepareQuestPart(string _questID,bool OnLoadTriggered)
     {
         questID = _questID;
-
-        BattleH.initiateBattleAtPremadeArena(friendlyParty,enemiesToFight);
+        if (!OnLoadTriggered)
+        {
+            BattleH.initiateBattleAtPremadeArena(friendlyParty, enemiesToFight, questID, this.gameObject.scene.name);
+        }
+        else
+        {
+            QH.ReverseStateWithOne(questID);
+        }
+        
     }
 
     public void Battle_Has_Finished(object sender, EventArgs e)
     {
 
-        QH.taskCompletedWithID(questID);
+        //QH.taskCompletedWithID(questID);
     }
 }

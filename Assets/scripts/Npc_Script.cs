@@ -88,17 +88,27 @@ public class Npc_Script : Interractable
             
             if (activeQuestIDs.Count > 0)
             {
-                showExclamationMark();
-            }
-            
+                if (activeQuestIDs[0].Item2)
+                {
+                    if (questAvailableToShow != null)
+                    {
+                        Destroy(questAvailableToShow);
+                    }
+                    showExclamationMark();
+                }
+            }     
             else if (availableQuestIDs.Count > 0)
             {
                 if (availableQuestIDs[0].Item2)
                 {
+                    if (questAvailableToShow !=null)
+                    {
+                        Destroy(questAvailableToShow);
+                    }
                     showQuestionMark();
                 }
             }
-            else
+            else if (availableQuestIDs.Count==0 && activeQuestIDs.Count==0)
             {
                 if (questAvailableToShow != null)
                 {
@@ -106,6 +116,8 @@ public class Npc_Script : Interractable
                 }
             }
         }
+        Debug.Log("Active quest count: " + activeQuestIDs.Count);
+        Debug.Log("Available quest count: " + availableQuestIDs.Count);
     }
 
     //deletes the top (0) list element because the quest had been taken/finished normally
@@ -114,14 +126,18 @@ public class Npc_Script : Interractable
         if (activeQuestIDs.Count > 0)
         {
             taskCompleted();
+            
             activeQuestIDs.RemoveAt(0);
             refreshMarks();
+            
         }
         else if (availableQuestIDs.Count > 0)
         {
             questAccepted();
+            
             availableQuestIDs.RemoveAt(0);
             refreshMarks();
+           
         }
     }
 

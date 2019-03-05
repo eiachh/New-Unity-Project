@@ -23,12 +23,19 @@ public class Quest_Handler : MonoBehaviour
     public delegate void QuestListInitializeFinishedEventHandler(object sender, EventArgs args);
     public event QuestListInitializeFinishedEventHandler QuestListInitializeFinished;
 
+    public CanvasGroup QuestCompletedUI;
+    public Canvas QuestCompletedCanvas;
+
+    UI_Fade fader;
 
     // Start is called before the first frame update
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
+        Battle_Handler Battle_H = FindObjectOfType<Battle_Handler>();
+        fader = FindObjectOfType<UI_Fade>();
+        Battle_H.BattleFinished += OnBattlefinished;
         //QuestListInitializeFinished(EventArgs.Empty);
         //Calling the event so the quests can initialize themselves
         if (QuestListInitializeFinished != null)
@@ -46,6 +53,11 @@ public class Quest_Handler : MonoBehaviour
             QuestListInitializeFinished(this, EventArgs.Empty);
             handleAvailableQuests();
         }
+    }
+
+    void OnBattlefinished(object sender,Battle_Handler.BattleFinishedEventArgs e)
+    {
+        Debug.Log("yep bbattle has finished and the winner is: "+e.WinnerTeam);
     }
 
     private void cleanUpLists()
@@ -225,6 +237,7 @@ public class Quest_Handler : MonoBehaviour
         //it looks this retarded since tUpLe Is ReAd oNly I can be bothered fix it if you see it and can be bothered
         //#Fix
         var toIncrease = activeQuestList.Find(x => x.Item1 == ID);
+        
         Tuple<string, int> questID_state = new Tuple<string, int>(toIncrease.Item1, toIncrease.Item2 + 1);
         activeQuestList.Remove(toIncrease);
         activeQuestList.Add(questID_state);
@@ -232,6 +245,45 @@ public class Quest_Handler : MonoBehaviour
         {
             //temp.getTargetNpc().addActiveQuest(temp.questID, temp.getVisibleMark());
             temp.taskCompleted();
+        }
+    }
+
+    public void questCompleted(string qID)
+    {
+
+        var temp = activeQuestList.Find(x => x.Item1 == qID);
+        activeQuestList.Remove(temp);
+
+        completedQuestList.Add(qID);
+
+
+        Debug.Log("questcomp UI: " + QuestCompletedUI);
+        QuestCompletedCanvas.enabled = true;
+        QuestCompletedUI.enabled = true;
+        QuestCompletedUI.alpha = 1.0f;
+
+        fader.FadeOut(QuestCompletedUI);
+    }
+
+    public void ReverseStateWithOne(string qID)
+    {
+        var temp = activeQuestList.Find(x => x.Item1 == qID);
+        if (temp.Item2 == 1)
+        {
+            activeQuestList.Remove(temp);
+            availableQuestList.Add(temp);
+        }
+        else if (temp.Item2==0)
+        {
+            Debug.Log("Error activeQuestlist at quID: " + temp.Item1 + " state is 0 and is reversing with one");
+        }
+        else
+        {
+            Tuple<string, int> questID_state = new Tuple<string, int>(temp.Item1, (temp.Item2 - 1));
+            activeQuestList.Remove(temp);
+            activeQuestList.Add(questID_state);
+            var fullquest = allQuestList.Find(x => x.questID == qID);
+            fullquest.ReverseStateTo(questID_state.Item2);
         }
     }
 

@@ -9,7 +9,7 @@ public class Quest_PartBase : MonoBehaviour
     //public Npc_Script startingNpc;
 
         //all type of quest prepares the part for itself e.g. the talking quests tells the nps they are holding a quest
-    public virtual void PrepareQuestPart(string questID)
+    public virtual void PrepareQuestPart(string questID,bool OnLoadTriggered)
     {
         Debug.Log("This should be overwritten every time");
     }

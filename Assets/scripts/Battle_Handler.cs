@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class Battle_Handler : MonoBehaviour
 {
+    public enum BattleWinner { Friendly,Enemy,Tie};
+
     public class DamageRecievedEventArgs : EventArgs
     {
         public int RecievedDamage { get; set; }
@@ -18,11 +20,22 @@ public class Battle_Handler : MonoBehaviour
         }
     }
 
+    public class BattleFinishedEventArgs : EventArgs
+    {
+        public BattleWinner WinnerTeam { get; }
+        public string questID { get;}
+        public BattleFinishedEventArgs(BattleWinner bw,string qID)
+        {
+            WinnerTeam = bw;
+            questID = qID;
+        }
+    }
+
     public delegate void BattleStartedEventHandler(object sender, EventArgs e);
     public event BattleStartedEventHandler BattleStarted;
 
     public delegate void BattleFinishedEventHandler(object sender, EventArgs e);
-    public event BattleFinishedEventHandler BattleFinished;
+    public event EventHandler<BattleFinishedEventArgs> BattleFinished;
 
     public delegate void DamageRecievedEventHandler(object sender, EventArgs e);
     public event EventHandler<DamageRecievedEventArgs> DamageRecieved;
@@ -34,11 +47,18 @@ public class Battle_Handler : MonoBehaviour
     List<Enemy_Base> enemies;
 
     Battle_Capability_Handler activeCharacter = null;
+    Loading_Screen loading_Screen;
 
+    string questID;
+    string OriginalScene_ToGoBackAtFinish;
     int speedCap = 100;
     //counts back till the next turn can start it is happening so the user can see the hud changes turnEnding() uses it
     float countBackForNextTurnStart = -1;
 
+    void Start()
+    {
+        loading_Screen = FindObjectOfType<Loading_Screen>();
+    }
 
     //its retarded... BUT IT WORKS
     void Update()
@@ -60,22 +80,29 @@ public class Battle_Handler : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
-   public void initiateBattleAtLocation(List<User_Battle_Unit> _friendlies,List<Enemy_Base> _enemies)
+   public void initiateBattleAtLocation(List<User_Battle_Unit> _friendlies,List<Enemy_Base> _enemies,string _questID)
     {
         friendlies = _friendlies;
         enemies = _enemies;
+
+        questID = _questID;
 
         BattleUI.enabled = true;
 
         nextTurn();
         BattleStarted(this, EventArgs.Empty);
     }
-    public void initiateBattleAtPremadeArena(List<User_Battle_Unit> _friendlies, List<Enemy_Base> _enemies)
+    public void initiateBattleAtPremadeArena(List<User_Battle_Unit> _friendlies, List<Enemy_Base> _enemies,string _questID,string _originalScene)
     {
-        SceneManager.LoadScene("testscene");
+
+        loading_Screen.teleportTo("testscene");
+       // SceneManager.LoadScene("testscene");
 
         friendlies = _friendlies;
         enemies = _enemies;
+
+        questID = _questID;
+        OriginalScene_ToGoBackAtFinish = _originalScene;
 
         BattleUI.enabled = true;
 
@@ -198,6 +225,10 @@ public class Battle_Handler : MonoBehaviour
     public void battleUIButtonClicked()
     {
         BattleUI.enabled = false;
-        BattleFinished(this, EventArgs.Empty);
+        BattleFinished(this, new BattleFinishedEventArgs(BattleWinner.Enemy,questID));
+        loading_Screen = FindObjectOfType<Loading_Screen>();
+        loading_Screen.teleportTo(OriginalScene_ToGoBackAtFinish);
+        
     }
+
 }

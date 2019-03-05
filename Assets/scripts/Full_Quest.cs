@@ -15,8 +15,6 @@ public class Full_Quest : MonoBehaviour
     public string questID;
     public string prerequisiteQuestID="none";
 
-    public Canvas QuestCompletedUI;
-
 
     void Awake()
     {
@@ -42,32 +40,39 @@ public class Full_Quest : MonoBehaviour
     {
         return questParts[QuestState].NpcQuestText;
     }
-    public bool taskCompleted()
+    public void taskCompleted()
     {
         //the bool is never used YET in references
         if (QuestState == questParts.Count-1)
         {
-            QuestCompletedUI.enabled = true;
             completedQuest = true;
-            return true;
+            QH.questCompleted(questID);
         }
         else
         {
             QuestState++;
             
-            questParts[QuestState].PrepareQuestPart(questID);
-            return false;
+            questParts[QuestState].PrepareQuestPart(questID,false);
         }
     }
     public void OnLoadSetup(int _state)
     {
         QuestState = _state;
-        if (QuestState == questParts.Count - 1)
+        if (QuestState == questParts.Count)
         {
-            QuestCompletedUI.enabled = true;
             completedQuest = true;
-            return;
+            QH.questCompleted(questID);
         }
-        questParts[QuestState].PrepareQuestPart(questID);
+        else
+        {
+            questParts[QuestState].PrepareQuestPart(questID,true);
+        }
+        
+    }
+
+    public void ReverseStateTo(int value)
+    {
+        QuestState=value;
+        questParts[QuestState].PrepareQuestPart(questID, false);
     }
 }
