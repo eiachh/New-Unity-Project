@@ -5,11 +5,13 @@ using UnityEngine;
 public class Hitbox : MonoBehaviour
 {
     //self as the object with this hitbox not the actual hitbox
+    [Tooltip("The reference to the Interractable script (the parents)")]
     public Interractable self;
 
 
     Character_Script MainCharacter;
 
+    //adds the reference when the maincharacter entered the hitbox
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag == "mainchar" && other != null)
@@ -21,6 +23,7 @@ public class Hitbox : MonoBehaviour
 
         }
     }
+
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.gameObject.tag == "mainchar" && other != null)

@@ -80,6 +80,7 @@ public class Battle_Handler : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
+    //Battle without Loading BattleScene
    public void initiateBattleAtLocation(List<User_Battle_Unit> _friendlies,List<Enemy_Base> _enemies,string _questID)
     {
         friendlies = _friendlies;
@@ -92,6 +93,8 @@ public class Battle_Handler : MonoBehaviour
         nextTurn();
         BattleStarted(this, EventArgs.Empty);
     }
+
+    //Battle at custom BattleScene
     public void initiateBattleAtPremadeArena(List<User_Battle_Unit> _friendlies, List<Enemy_Base> _enemies,string _questID,string _originalScene)
     {
 
@@ -110,6 +113,8 @@ public class Battle_Handler : MonoBehaviour
         
         BattleStarted(this, EventArgs.Empty);
     }
+
+    //handles next turn of the battle
     private void nextTurn()
     {
         
@@ -127,7 +132,7 @@ public class Battle_Handler : MonoBehaviour
         }
     }
 
-    //by the time increases the speed when a character reaches the cap its their turn
+    //by the time, increases the speed. When a character reaches the cap its their turn
     private Battle_Capability_Handler calculateNextCharactersTurn()
     {
         Battle_Capability_Handler temp=null;

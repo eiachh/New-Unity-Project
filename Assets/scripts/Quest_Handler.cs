@@ -8,7 +8,7 @@ using System.Linq;
 
 public class Quest_Handler : MonoBehaviour
 {
-
+    //Contains all the registered quests that the CURRENT SCENE contains
     List<Full_Quest> allQuestList = new List<Full_Quest>();
 
 
@@ -20,10 +20,13 @@ public class Quest_Handler : MonoBehaviour
     //contains the questID's that are completed
     List<string> completedQuestList = new List<string>();
 
+    //Basically was designed to make quests register after initialization NOW it is used to tell quests to register at different states
     public delegate void QuestListInitializeFinishedEventHandler(object sender, EventArgs args);
-    public event QuestListInitializeFinishedEventHandler QuestListInitializeFinished;
+    public event QuestListInitializeFinishedEventHandler OnFullQuestRegisterRequired;
 
+    [Tooltip("Needs the UI element that has the CanvasGroupComponent <-- That can fade.")]
     public CanvasGroup QuestCompletedUI;
+    [Tooltip("The full UI Canvas so it can be disabled after fading.")]
     public Canvas QuestCompletedCanvas;
 
     UI_Fade fader;
@@ -36,25 +39,32 @@ public class Quest_Handler : MonoBehaviour
         Battle_Handler Battle_H = FindObjectOfType<Battle_Handler>();
         fader = FindObjectOfType<UI_Fade>();
         Battle_H.BattleFinished += OnBattlefinished;
-        //QuestListInitializeFinished(EventArgs.Empty);
-        //Calling the event so the quests can initialize themselves
-        if (QuestListInitializeFinished != null)
+       
+        //At this state telling FullQuest-s to register themselves
+        if (OnFullQuestRegisterRequired != null)
         {
-            QuestListInitializeFinished(this, EventArgs.Empty);
-            handleAvailableQuests();
-        }
-    }
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        cleanUpLists();
-        if (QuestListInitializeFinished != null)
-        {
-            
-            QuestListInitializeFinished(this, EventArgs.Empty);
+            OnFullQuestRegisterRequired(this, EventArgs.Empty);
             handleAvailableQuests();
         }
     }
 
+    //After loading a screen has to register the Quests of that scene and clean up the null junks from the lists
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        cleanUpLists();
+        if (OnFullQuestRegisterRequired != null)
+        {
+            
+            OnFullQuestRegisterRequired(this, EventArgs.Empty);
+            handleAvailableQuests();
+        }
+    }
+
+    /*Triggers when a battle has finishes determines the winner and if its the Friendly party calls the quest that requires it 
+
+        NOT NECESSARY HAVE ANY QUEST THAT NEEDS THE BATTLE RESULT
+
+   */
     void OnBattlefinished(object sender,Battle_Handler.BattleFinishedEventArgs e)
     {
         Debug.Log("yep bbattle has finished and the winner is: "+e.WinnerTeam);
@@ -64,71 +74,73 @@ public class Quest_Handler : MonoBehaviour
     {
         allQuestList.RemoveAll(x => x==null);
         availableQuestList.Clear();
-        /* for (int i = 0; i < allQuestList.Count; i++)
-         {
-             if (allQuestList[i] == null)
-             {
-                 allQuestList.RemoveAt(i);
-                 i--;
-             }
-         }
-
-         foreach (var item in allQuestList)
-         {
-             if (item==null)
-             {
-                 allQuestList.Remove(item);
-             }
-         }*/
     }
 
-    //after initializing the lists the QuestListInitializeFinished event fires and tells all the single_quests to register themselfes this lets you create quests from editor
+    //after initializing the lists the OnFullQuestRegisterRequired event fires and tells all the single_quests to register themselfes this lets you create quests from editor
     public void addToQuestList(Full_Quest x, bool defaultAvailable, bool completed)
     {
         //THIS CHECKS NEEDED FOR THE OnLoadScene() event so the quest wont register themselves multiple times
 
-
+        //OUTDATED block of comment but kinda correct
         /*if allquestlist not contains this quest => the quest is new and has to be handled
                       if its available by default =>has to be added to availablequestList no other statement needed
        if the prerequisite is none and not default=>its a quest that will be locally activated by another quest
        if the prerequisite is NOT none and the prerequisit quest is completed before ===> it is valid to be an Available quest */
+       //OUTDATED
 
+        //if the registering quest is not null Happens if Scene change happens multiple times
         if (x != null)
         {
-            //Debug.Log("!=null");
+            //check so the quest won't be stored multiple times
             if (!allQuestList.Contains(x))
             {
-               // Debug.Log("!allQuest.Contains");
                 allQuestList.Add(x);
                 if (!completed)
                 {
-                   // Debug.Log("!completed");
-                    //can be already accepted if we jsut come back to the scene where this quest is placed 
                     if (defaultAvailable)
                     {
-                       // Debug.Log("default");
+                       
                         var findID = activeQuestList.Find(y => y.Item1 == x.questID);
-                        //IF NOT CONTAINING THIS QUEST
+                        //If the player progressed in this quest
                         if (findID!=null)
                         {
                             allQuestList.Find(y => y.questID == x.questID).OnLoadSetup(findID.Item2);
                         }
+                        //on testing for the case if the starting quest part doesnt have a talking npc
+                        else if (x.prerequisiteQuestID=="special")
+                        {
+                            activeQuestList.Add(new Tuple<string, int>(x.questID, x.QuestState));
+                        }
+                        //adds to the available quest since it was a default available quest nothing else to check
                         else if (!completedQuestList.Contains(x.questID))
                         {
                             availableQuestList.Add(new Tuple<string, int>(x.questID, x.QuestState));
                         }
                     }
+                    //if the prerequisiteQuestID =="none" and its not DefaultAvailable then its waiting for code activation
                     else if (x.prerequisiteQuestID != "none" && (completedQuestList.Find(y => y == x.prerequisiteQuestID) != null))
                     {
-                        var findID = activeQuestList.Find(y => y.Item1 == x.questID);
+                        
                         //this point is reached if its not a quest starting point BUT the player has a quest that he progressed BUT didnt finish yet
-                        if (findID != null)
+                        if (!completedQuestList.Contains(x.questID))
                         {
-                            allQuestList.Find(y => y.questID == x.questID).OnLoadSetup(findID.Item2);
-                        }
-                        else if (!completedQuestList.Contains(x.questID))
-                        {                            
-                            availableQuestList.Add(new Tuple<string, int>(x.questID, x.QuestState));
+                            var findID = activeQuestList.Find(y => y.Item1 == x.questID);
+                            if (findID != null )
+                            {
+
+                                var temp = allQuestList.Find(y => y.questID == x.questID);
+                                temp.OnLoadSetup(findID.Item2);
+                            }
+                            //if it's a continuationOF a quest then adding for active quest for the exclamationmark symbol
+                            else if ( x.ContinuationOfQuest)
+                            {
+                                activeQuestList.Add(new Tuple<string, int>(x.questID,0));
+                                x.OnLoadSetup(0);
+                            }
+                            else
+                            {
+                                availableQuestList.Add(new Tuple<string, int>(x.questID, x.QuestState));
+                            }
                         }
                     }
                 }
@@ -142,46 +154,18 @@ public class Quest_Handler : MonoBehaviour
                     }
                 }
             }
-
-
-
-
-
-           /* if (x.prerequisiteQuestID == "none")
-            {
-                if (defaultAvailable == true && completed == false)
-                {
-                    availableQuestList.Add(x);
-                }
-            }
-            else
-            {
-                var completedListContains = completedQuestList.Find(y => y.prerequisiteQuestID == x.prerequisiteQuestID);
-                if (completedListContains != null)
-                {
-                    allQuestList.Add(x);
-                    if (defaultAvailable == true && completed == false)
-                    {
-                        availableQuestList.Add(x);
-                    }
-                }
-            }*/
         }
     }
 
-    
 
-
-    //Need fix if its not a talking quest this will throw an error (even tho before battle you probably want to talk) Questionable
+    //sets the npc's up who should give the quests (questionable since not all quest should start with an npc talk 
+    //
+    // AVOIDABLE BY SETTING  prerequisiteQuestID=="special" and ActiveByDefault == True
+    //
     private void handleAvailableQuests()
     {
         foreach (var item in availableQuestList)
         {
-           // Debug.Log(item);
-            foreach (var item2 in allQuestList)
-            {
-               // Debug.Log("Item2: "+item2);
-            }
             var getQuestReference = allQuestList.Find(x => x.questID == item.Item1);
             if (getQuestReference != null)
             {
@@ -235,7 +219,6 @@ public class Quest_Handler : MonoBehaviour
         var temp = allQuestList.Find(x => x.questID == ID);
 
         //it looks this retarded since tUpLe Is ReAd oNly I can be bothered fix it if you see it and can be bothered
-        //#Fix
         var toIncrease = activeQuestList.Find(x => x.Item1 == ID);
         
         Tuple<string, int> questID_state = new Tuple<string, int>(toIncrease.Item1, toIncrease.Item2 + 1);
@@ -243,7 +226,6 @@ public class Quest_Handler : MonoBehaviour
         activeQuestList.Add(questID_state);
         if (temp != null)
         {
-            //temp.getTargetNpc().addActiveQuest(temp.questID, temp.getVisibleMark());
             temp.taskCompleted();
         }
     }
@@ -256,8 +238,6 @@ public class Quest_Handler : MonoBehaviour
 
         completedQuestList.Add(qID);
 
-
-        Debug.Log("questcomp UI: " + QuestCompletedUI);
         QuestCompletedCanvas.enabled = true;
         QuestCompletedUI.enabled = true;
         QuestCompletedUI.alpha = 1.0f;
@@ -286,23 +266,4 @@ public class Quest_Handler : MonoBehaviour
             fullquest.ReverseStateTo(questID_state.Item2);
         }
     }
-
-    /*public void registerQuestStateUpdate()
-    {
-
-    }*/
-
-    /*public bool doesQuestExceist(string ID,bool isActive)
-    {
-        var temp = activeQuestList.Find(x => x.questid == ID);
-        if (temp==null)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-    */
 }

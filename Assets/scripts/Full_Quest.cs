@@ -7,19 +7,26 @@ public class Full_Quest : MonoBehaviour
 {
     Quest_Handler QH;
 
+    [Tooltip("The list that contains the quest parts. Parts have to be in order in the list for correct quest order.")]
     public List<Quest_PartBase> questParts = new List<Quest_PartBase>();
     public int QuestState { get; set; } = 0;
 
+    [Tooltip("Set true if you want the quest to be available without any statement at all.")]
     public bool availableByDefault = false;
+    [Tooltip("If you set this to complete the quest won't be available ever. Could be used for reference purposes.")]
     public bool completedQuest = false;
+    [Tooltip("EVERY QUEST'S questID HAS TO BE UNIQUE! Make sure to set it something understandable since other quests can refer to this with \"prerequisiteQuestID\"")]
     public string questID;
+    [Tooltip("Set this to the quest's questID that would unlock this quest.")]
     public string prerequisiteQuestID="none";
+    [Tooltip("Set this to true if this should be AUTOMATICALLY activated after prerequisiteQuestID got completed!")]
+    public bool ContinuationOfQuest = false;
 
 
     void Awake()
     {
         QH = FindObjectOfType<Quest_Handler>();
-        QH.QuestListInitializeFinished += register;
+        QH.OnFullQuestRegisterRequired += register;
     }
     public void register(object sender, EventArgs e)
     {
@@ -55,6 +62,8 @@ public class Full_Quest : MonoBehaviour
             questParts[QuestState].PrepareQuestPart(questID,false);
         }
     }
+
+    //when SceneLoaded Happened and has to get the previous lost state
     public void OnLoadSetup(int _state)
     {
         QuestState = _state;

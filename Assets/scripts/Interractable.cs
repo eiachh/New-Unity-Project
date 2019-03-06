@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class Interractable : MonoBehaviour
 {
+    //MY FIRST PRECIOUS CREATION LITERALLY A CLUSTERFUCK AND SHOULD BE REMADE LATER. (NOT LIKE A MONKEY)
+
+
     public GameObject self;
     public GameObject hitbox;
     private Text text;
@@ -17,6 +20,7 @@ public class Interractable : MonoBehaviour
     int currentIndexOfList = 0;
 
     bool alreadyInterracted = false;
+
     public void divide(string s)
     {
         listToPrint.Clear();
@@ -28,6 +32,9 @@ public class Interractable : MonoBehaviour
     {
         return false;
     }
+
+    //For some reason it seemed like a gread idea that the parent handles the ui inside himself
+    //this is called when player pressed "Interaction key" on an Interractable (NPC_Script)
     protected bool startInterraction(string customizeableText)
     {
 
@@ -138,6 +145,8 @@ public class Interractable : MonoBehaviour
             yield return new WaitForSeconds(speed);
         }
     }
+
+    //Not entirely sure jsut dont touch it until we remake this whole thing
     protected virtual bool nextDialog(Npc_Script caller)
     {
         currentIndexOfList++;

@@ -7,17 +7,18 @@ using UnityEngine.SceneManagement;
 
 public class Character_Script : MonoBehaviour
 {
-
+    [Tooltip("The game object itself (Just pull the controlled character over the box)")]
     public GameObject self;
     //public BoxCollider2D collider2Da;
     //public BoxCollider2D collider2D;
+    [Tooltip("The hitbox of the controlled character (Just pull the controlled character over the box)")]
     public Rigidbody2D rigigbody2D;
     //public Interractable target;
     //public GameObject target2;
     bool isInterracting = false;
     int openedInterractionIndex;
     Battle_Handler BattleH;
-    bool characterInBattle=false;
+    bool characterInBattle = false;
 
     List<Interractable> interractablesUpClose = new List<Interractable>();
 
@@ -37,31 +38,26 @@ public class Character_Script : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    //if the scene is changed during self is inside of an interractable hitbox
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         interractablesUpClose.Clear();
     }
-    /*void LateUpdate()
-    {
-        Camera temp = FindObjectOfType<Camera>();
-        Vector3 distance = new Vector3(0, 0, -100);
-        temp.transform.position = this.transform.position+distance;
-    }*/
 
-        public void addForInterraction(Interractable x)
+    public void addForInterraction(Interractable x)
     {
         interractablesUpClose.Add(x);
     }
     public void removeForInterraction(Interractable x)
     {
-        
+
         if (interractablesUpClose.Contains(x))
         {
             interractablesUpClose.Remove(x);
         }
     }
 
-    //calculates which interractable object is closer to the character and returns the index of the closer one for further interraction
+    //calculates which interractable object is closer to the character and returns the reference of the closer one for further interraction
     private Interractable decideFromInterractionList()
     {
         Interractable ret = null;
@@ -84,7 +80,7 @@ public class Character_Script : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //interract button
         if (Input.GetKeyDown(KeyCode.F))
         {
             var item = decideFromInterractionList();
@@ -101,6 +97,7 @@ public class Character_Script : MonoBehaviour
                 isInterracting = item.nextDialog();
             }
         }
+        //cnacel interraction button
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isInterracting)
@@ -111,7 +108,7 @@ public class Character_Script : MonoBehaviour
         }
     }
 
-    public void Battle_Has_Started(object sender,EventArgs e)
+    public void Battle_Has_Started(object sender, EventArgs e)
     {
         characterInBattle = true;
     }
@@ -124,7 +121,7 @@ public class Character_Script : MonoBehaviour
     {
         if (characterInBattle)
         {
-
+            //future different controls for battle
         }
         else if (!isInterracting)
         {

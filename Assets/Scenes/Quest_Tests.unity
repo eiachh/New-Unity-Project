@@ -672,6 +672,7 @@ MonoBehaviour:
   completedQuest: 0
   questID: Test_2
   prerequisiteQuestID: Test_1
+  ContinuationOfQuest: 1
 --- !u!4 &1949656925
 Transform:
   m_ObjectHideFlags: 0

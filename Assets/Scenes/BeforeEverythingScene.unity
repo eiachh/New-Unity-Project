@@ -491,6 +491,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiElement: {fileID: 0}
+  waitTimeMillsec: 0
 --- !u!4 &609328134
 Transform:
   m_ObjectHideFlags: 0
@@ -1475,9 +1476,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9239e54c014e664994eed98bde957a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  x: 7
-  y: -2
-  z: 0
 --- !u!4 &1733006113
 Transform:
   m_ObjectHideFlags: 0
