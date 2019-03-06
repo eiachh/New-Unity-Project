@@ -126,11 +126,15 @@ public class Interractable : MonoBehaviour
         text.text = "";
         foreach (char letter in textanimation)
         {
+            
             if(listToPrint[currentIndexOfList] != textanimation || text.text == textanimation)
             {
                 yield break;
             }
-            text.text += letter;
+            if (text != null)
+            {
+                text.text += letter;
+            }
             yield return new WaitForSeconds(speed);
         }
     }

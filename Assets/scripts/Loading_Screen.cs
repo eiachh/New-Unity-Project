@@ -11,6 +11,8 @@ public class Loading_Screen : MonoBehaviour
     public Text LoadingText;
     bool alreadyEntered = false;
 
+    GameObject character;
+    WorldPositionHolder worldPos;
 
     public string SceneToLoad = "FirstScene";
 
@@ -25,6 +27,9 @@ public class Loading_Screen : MonoBehaviour
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
+        var temp = FindObjectOfType<Character_Script>();
+        worldPos = FindObjectOfType<WorldPositionHolder>();
+        character = temp.gameObject;
     }
 
     // Update is called once per frame
@@ -41,6 +46,9 @@ public class Loading_Screen : MonoBehaviour
             alreadyEntered = true;
             UI_LoadingScreen.enabled = false;
             SceneManager.LoadScene(SceneToLoad);
+            Vector2 v = worldPos.gameObject.transform.position;
+            character.transform.position = v;
+            
 
         }
     }

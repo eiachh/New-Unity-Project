@@ -4,7 +4,16 @@ using UnityEngine;
 
 public class WorldPositionHolder : MonoBehaviour
 {
-    public float x = 1;
-    public float y = 1;
-    public float z = 1;
+    public float x
+    {
+        get { return this.gameObject.transform.position.x; }
+    }
+    public float y
+    {
+        get { return this.gameObject.transform.position.y; }
+    }
+    public float z
+    {
+        get { return this.gameObject.transform.position.z; }
+    }
 }

@@ -262,7 +262,7 @@ public class Quest_Handler : MonoBehaviour
         QuestCompletedUI.enabled = true;
         QuestCompletedUI.alpha = 1.0f;
 
-        fader.FadeOut(QuestCompletedUI);
+        fader.FadeOut(QuestCompletedCanvas,QuestCompletedUI,2);
     }
 
     public void ReverseStateWithOne(string qID)

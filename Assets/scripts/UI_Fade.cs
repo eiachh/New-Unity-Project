@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading;
 
 public class UI_Fade : MonoBehaviour
 {
     public CanvasGroup uiElement;
+    public int waitTimeMillsec=0;
 
     void Start()
     {
@@ -12,20 +14,22 @@ public class UI_Fade : MonoBehaviour
     }
     public void FadeIn()
     {
-        StartCoroutine(FadeCanvasGroup(uiElement, uiElement.alpha, 1, .5f));
+        //StartCoroutine(FadeCanvasGroup(uiElement, uiElement.alpha, 1, .5f));
     }
 
-    public void FadeOut(CanvasGroup ui)
+    public void FadeOut(Canvas canvasToDisable,CanvasGroup ui, int _waitTimeMillsec = 0)
     {
         uiElement = ui;
-        StartCoroutine(FadeCanvasGroup(uiElement, uiElement.alpha, 0, 2.5f));
+        StartCoroutine(FadeCanvasGroup(canvasToDisable,uiElement, uiElement.alpha, 0, 2.5f,_waitTimeMillsec));
     }
 
-    public IEnumerator FadeCanvasGroup(CanvasGroup cg, float start, float end, float lerpTime = 1)
+    public IEnumerator FadeCanvasGroup(Canvas canvasToDisable, CanvasGroup cg, float start, float end, float lerpTime = 1,int _waitTimeMillsec =0)
     {
         float _timeStartedLerping = Time.time;
         float timeSinceStarted = Time.time - _timeStartedLerping;
         float percentageComplete = timeSinceStarted / lerpTime;
+
+        Thread.Sleep(_waitTimeMillsec);
 
         while (true)
         {
@@ -38,7 +42,7 @@ public class UI_Fade : MonoBehaviour
 
             if (percentageComplete >= 1)
             {
-               //fix make it disabled after
+                canvasToDisable.enabled = false;
                 break;
             }
 
