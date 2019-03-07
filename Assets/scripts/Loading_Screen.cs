@@ -27,6 +27,7 @@ public class Loading_Screen : MonoBehaviour
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
         var temp = FindObjectOfType<Character_Script>();
         worldPos = FindObjectOfType<WorldPositionHolder>();
         character = temp.gameObject;
@@ -36,21 +37,32 @@ public class Loading_Screen : MonoBehaviour
     void Update()
     {
         counter += Time.deltaTime;
-        if (counter>1 && counter<1.5f)
+        if (counter > 1 && counter < 1.5f)
         {
             LoadingText.text = "Loading Done!";
-           // SceneManager.LoadScene("FirstScene");
+            // SceneManager.LoadScene("FirstScene");
         }
-        else if (counter>timeToWait && alreadyEntered==false)
+        else if (counter > timeToWait && alreadyEntered == false)
         {
             alreadyEntered = true;
             UI_LoadingScreen.enabled = false;
             SceneManager.LoadScene(SceneToLoad);
-            Vector2 v = worldPos.gameObject.transform.position;
-            character.transform.position = v;
-            
-
         }
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        worldPos = FindObjectOfType<WorldPositionHolder>();
+        Vector2 v;
+        if (worldPos != null)
+        {
+            v = worldPos.gameObject.transform.position;
+        }
+        else
+        {
+            v = new Vector2(0, 0);
+        }
+        character.transform.position = v;
     }
 
     public void teleportTo(string _scene)

@@ -53,7 +53,7 @@ public class Full_Quest : MonoBehaviour
         if (QuestState == questParts.Count-1)
         {
             completedQuest = true;
-            QH.questCompleted(questID);
+            QH.questCompleted(questID,questParts[QuestState].CanBeQuestEnd);
         }
         else
         {
@@ -70,7 +70,7 @@ public class Full_Quest : MonoBehaviour
         if (QuestState == questParts.Count)
         {
             completedQuest = true;
-            QH.questCompleted(questID);
+            QH.questCompleted(questID,questParts[QuestState].CanBeQuestEnd);
         }
         else
         {

@@ -116,8 +116,6 @@ public class Npc_Script : Interractable
                 }
             }
         }
-        Debug.Log("Active quest count: " + activeQuestIDs.Count);
-        Debug.Log("Available quest count: " + availableQuestIDs.Count);
     }
 
     //deletes the top (0) list element because the quest had been taken/finished normally

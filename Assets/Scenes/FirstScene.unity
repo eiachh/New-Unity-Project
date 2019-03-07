@@ -933,6 +933,7 @@ MonoBehaviour:
   visibleMark: 1
   NpcQuestText: very Well
   IsFinished: 0
+  CanBeQuestEnd: 0
 --- !u!4 &808668010
 Transform:
   m_ObjectHideFlags: 0
@@ -980,6 +981,7 @@ MonoBehaviour:
   visibleMark: 1
   NpcQuestText: finish at thisscene
   IsFinished: 0
+  CanBeQuestEnd: 0
 --- !u!4 &943574049
 Transform:
   m_ObjectHideFlags: 0
@@ -1041,6 +1043,7 @@ MonoBehaviour:
   visibleMark: 1
   NpcQuestText: why Is thius here
   IsFinished: 0
+  CanBeQuestEnd: 0
   additionalControllablePartyMembers: []
   enemiesToFight:
   - {fileID: 3192715493886658432}
@@ -1195,6 +1198,7 @@ MonoBehaviour:
   visibleMark: 1
   NpcQuestText: Part2
   IsFinished: 0
+  CanBeQuestEnd: 0
 --- !u!1 &1132013014
 GameObject:
   m_ObjectHideFlags: 0
@@ -1864,6 +1868,7 @@ MonoBehaviour:
   completedQuest: 0
   questID: ID1
   prerequisiteQuestID: none
+  ContinuationOfQuest: 0
 --- !u!4 &1597442578
 Transform:
   m_ObjectHideFlags: 0
@@ -1960,6 +1965,7 @@ MonoBehaviour:
   visibleMark: 1
   NpcQuestText: Part1
   IsFinished: 0
+  CanBeQuestEnd: 0
 --- !u!1 &2142945053
 GameObject:
   m_ObjectHideFlags: 0
@@ -2281,6 +2287,7 @@ MonoBehaviour:
   completedQuest: 0
   questID: Test_1
   prerequisiteQuestID: none
+  ContinuationOfQuest: 0
 --- !u!1 &4933592278818022770
 GameObject:
   m_ObjectHideFlags: 0
@@ -2314,6 +2321,7 @@ MonoBehaviour:
   visibleMark: 1
   NpcQuestText: Part1
   IsFinished: 0
+  CanBeQuestEnd: 1
 --- !u!4 &6576417844800173457
 Transform:
   m_ObjectHideFlags: 0

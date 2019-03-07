@@ -67,6 +67,16 @@ public class Quest_Handler : MonoBehaviour
    */
     void OnBattlefinished(object sender,Battle_Handler.BattleFinishedEventArgs e)
     {
+        if (e.WinnerTeam == Battle_Handler.BattleWinner.Friendly)
+        {
+            var questWithTheSameIDAsBattle = activeQuestList.Find(x => x.Item1 == e.questID);
+
+            if (questWithTheSameIDAsBattle!=null)
+            {
+                activeQuestList.Remove(questWithTheSameIDAsBattle);
+                activeQuestList.Add(increaseStateInt(questWithTheSameIDAsBattle));
+            }
+        }
         Debug.Log("yep bbattle has finished and the winner is: "+e.WinnerTeam);
     }
 
@@ -206,7 +216,7 @@ public class Quest_Handler : MonoBehaviour
         {
             questRef.taskCompleted();
             //state increased since quest got accepted
-            Tuple<string, int> questID_state = new Tuple<string, int>(temp.Item1,temp.Item2+1);
+            Tuple<string, int> questID_state = increaseStateInt(temp);
             
 
             activeQuestList.Add(questID_state);
@@ -214,14 +224,19 @@ public class Quest_Handler : MonoBehaviour
 
         }
     }
+
+    private Tuple<string,int> increaseStateInt(Tuple<string,int> x)
+    {
+        return new Tuple<string, int>(x.Item1, (x.Item2 + 1));
+    }
     public void taskCompletedWithID(string ID)
     {
         var temp = allQuestList.Find(x => x.questID == ID);
 
         //it looks this retarded since tUpLe Is ReAd oNly I can be bothered fix it if you see it and can be bothered
         var toIncrease = activeQuestList.Find(x => x.Item1 == ID);
-        
-        Tuple<string, int> questID_state = new Tuple<string, int>(toIncrease.Item1, toIncrease.Item2 + 1);
+
+        Tuple<string, int> questID_state = increaseStateInt(toIncrease);
         activeQuestList.Remove(toIncrease);
         activeQuestList.Add(questID_state);
         if (temp != null)
@@ -230,7 +245,7 @@ public class Quest_Handler : MonoBehaviour
         }
     }
 
-    public void questCompleted(string qID)
+    public void questCompleted(string qID,bool canShowQuestCompletedUI)
     {
 
         var temp = activeQuestList.Find(x => x.Item1 == qID);
@@ -238,11 +253,14 @@ public class Quest_Handler : MonoBehaviour
 
         completedQuestList.Add(qID);
 
-        QuestCompletedCanvas.enabled = true;
-        QuestCompletedUI.enabled = true;
-        QuestCompletedUI.alpha = 1.0f;
+        if (canShowQuestCompletedUI)
+        {
+            QuestCompletedCanvas.enabled = true;
+            QuestCompletedUI.enabled = true;
+            QuestCompletedUI.alpha = 1.0f;
 
-        fader.FadeOut(QuestCompletedCanvas,QuestCompletedUI,2);
+            fader.FadeOut(QuestCompletedCanvas, QuestCompletedUI, 2);
+        }
     }
 
     public void ReverseStateWithOne(string qID)

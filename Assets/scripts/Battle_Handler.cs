@@ -4,10 +4,14 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Threading;
 
 public class Battle_Handler : MonoBehaviour
 {
     public enum BattleWinner { Friendly,Enemy,Tie};
+
+    //         scene               questid
+    List<Tuple<string, BattleWinner, string>> eventsFireAtLoad = new List<Tuple<string, BattleWinner, string>>();
 
     public class DamageRecievedEventArgs : EventArgs
     {
@@ -229,11 +233,12 @@ public class Battle_Handler : MonoBehaviour
     //temporary end fight event
     public void battleUIButtonClicked()
     {
+        BattleFinished(this, new BattleFinishedEventArgs(BattleWinner.Friendly, questID));
         BattleUI.enabled = false;
-        BattleFinished(this, new BattleFinishedEventArgs(BattleWinner.Enemy,questID));
+        
         loading_Screen = FindObjectOfType<Loading_Screen>();
         loading_Screen.teleportTo(OriginalScene_ToGoBackAtFinish);
-        
-    }
+        //BattleFinished(this, new BattleFinishedEventArgs(BattleWinner.Friendly, questID));
 
+    }
 }
