@@ -241,4 +241,25 @@ public class Battle_Handler : MonoBehaviour
         //BattleFinished(this, new BattleFinishedEventArgs(BattleWinner.Friendly, questID));
 
     }
+
+
+
+
+
+
+    public Image containerParent;
+    public Button toAdd;
+
+    //Testing zone
+
+    public void addbuttonto_listview()
+    {
+        var asd = Instantiate(toAdd);
+
+        asd.transform.parent = containerParent.transform;
+    }
+    public void moveButtons()
+    {
+        containerParent.transform.position = new Vector2(containerParent.transform.position.x,containerParent.transform.position.y + 10);
+    }
 }
