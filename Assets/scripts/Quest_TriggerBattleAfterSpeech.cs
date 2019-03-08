@@ -11,7 +11,6 @@ public class Quest_TriggerBattleAfterSpeech : Quest_PartBase
     public List<User_Battle_Unit> additionalControllablePartyMembers;
     public List<Enemy_Base> enemiesToFight;
 
-    Canvas Battle_UI;
 
     string questID;
     void Awake()
@@ -20,10 +19,6 @@ public class Quest_TriggerBattleAfterSpeech : Quest_PartBase
         BattleH= FindObjectOfType<Battle_Handler>();
         QH = FindObjectOfType<Quest_Handler>();
 
-        var Battle_Cont = FindObjectOfType<UI_Battle_Controller>();
-       Battle_UI = Battle_Cont.gameObject.GetComponent<Canvas>();
-
-        
 
         var temp = FindObjectOfType<Unique_Party>();
         friendlyParty.AddRange(temp.ControllablePartyMembers);
@@ -38,9 +33,7 @@ public class Quest_TriggerBattleAfterSpeech : Quest_PartBase
         questID = _questID;
         if (!OnLoadTriggered)
         {
-            Debug.Log("Activating REEEEEEE");
-            Battle_UI.enabled = true;
-            BattleH.initiateBattleAtPremadeArena(friendlyParty, enemiesToFight, questID, this.gameObject.scene.name);
+           BattleH.initiateBattleAtPremadeArena(friendlyParty, enemiesToFight, questID, this.gameObject.scene.name);
         }
         else
         {

@@ -62,10 +62,13 @@ public class Battle_Handler : MonoBehaviour
     //counts back till the next turn can start it is happening so the user can see the hud changes Proceed_TurnEnding() uses it
     float countBackForNextTurnStart = -1;
 
+    string battleSceneName = "";
+
     void Start()
     {
         loading_Screen = FindObjectOfType<Loading_Screen>();
         UI_Control = FindObjectOfType<UI_Battle_Controller>();
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     //its retarded... BUT IT WORKS    (after turn Proceede_endTurn() countBackForNExtTurnStart set to something > 0 and that causes next turn to happen)
@@ -107,9 +110,11 @@ public class Battle_Handler : MonoBehaviour
     //Battle at custom BattleScene
     public void initiateBattleAtPremadeArena(List<User_Battle_Unit> _friendlies, List<Enemy_Base> _enemies, string _questID, string _originalScene)
     {
+        battleSceneName = "testscene";
         BattleUI.enabled = true;
         emptyLists();
-        loading_Screen.teleportTo("testscene");
+        loading_Screen.teleportTo(battleSceneName);
+        
         // SceneManager.LoadScene("testscene");
 
         friendlies = _friendlies;
@@ -117,12 +122,16 @@ public class Battle_Handler : MonoBehaviour
 
         questID = _questID;
         OriginalScene_ToGoBackAtFinish = _originalScene;
-
-        
-
-        nextTurn();
-
-        BattleStarted(this, EventArgs.Empty);
+    }
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log(battleSceneName +"     "+ scene.name);
+        if (battleSceneName == scene.name)
+        {
+            Debug.Log("volt");
+            nextTurn();
+            BattleStarted(this, EventArgs.Empty);
+        }
     }
     private void emptyLists()
     {
@@ -300,21 +309,4 @@ public class Battle_Handler : MonoBehaviour
         }
     }
 
-
-
-    public Image containerParent;
-    public Button toAdd;
-
-    //Testing zone
-
-    public void addbuttonto_listview()
-    {
-        var asd = Instantiate(toAdd);
-
-        asd.transform.parent = containerParent.transform;
-    }
-    public void moveButtons()
-    {
-        containerParent.transform.position = new Vector2(containerParent.transform.position.x,containerParent.transform.position.y + 10);
-    }
 }

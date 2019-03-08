@@ -10,21 +10,19 @@ public class UI_Battle_Controller : MonoBehaviour
     public Image Selecter;
 
     public Image mainContainerParent;
-    public Button menuCustomButtons;
+    public Button menuCustomButton;
     float menuButtomHeight;
 
-    GameObject go;
-    Button testButton;
-
     List<Button> menuButtonList = new List<Button>();
+    int verticalIndexerOfmenuButtonList = 0;
 
-   // public List<>
+    public Text HealthText;
 
 
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
-        menuButtomHeight = menuCustomButtons.GetComponent<RectTransform>().sizeDelta.y;
+        menuButtomHeight = menuCustomButton.GetComponent<RectTransform>().sizeDelta.y;
 
     }
 
@@ -35,56 +33,48 @@ public class UI_Battle_Controller : MonoBehaviour
         foreach (var skill in battler.SkillList)
         {
             addButtonTo_Listview(skill);
-             
+
         }
     }
     public void UpdateUIBars(int _currentHealth)
     {
-
+        HealthText.text = _currentHealth.ToString();
     }
     private void addButtonTo_Listview(Skill_Base skill)
     {
-        go = new GameObject();
-        go.AddComponent<Button>();
-        go.AddComponent<RectTransform>();
-        go.AddComponent<CanvasRenderer>();
-        go.AddComponent<Image>();
+        //this is the first button thats already in the container
+        if (menuButtonList.Count == 0)
+        {
+            menuCustomButton.GetComponentInChildren<Text>().fontStyle = FontStyle.Bold;
+            menuCustomButton.GetComponentInChildren<Text>().text = (skill.name);
+            menuCustomButton.onClick.AddListener(
+                delegate 
+                {
+                    useSelectedSkill(menuCustomButton.tag);
+                });
+            menuButtonList.Add(menuCustomButton);
+        }
+        else
+        {
+            var instantiatedButton = Instantiate(menuCustomButton);
+            instantiatedButton.GetComponentInChildren<Text>().fontStyle = FontStyle.Bold;
+            instantiatedButton.GetComponentInChildren<Text>().text = (skill.name);
 
-        testButton = go.GetComponent<Button>();
+            //instantiatedButton.tag = skill.name;
 
-        testButton.GetComponent<RectTransform>().sizeDelta = menuCustomButtons.GetComponent<RectTransform>().sizeDelta;
-        testButton.gameObject.transform.localScale = new Vector3(1, 1, 1);
-
-        GameObject fortest = new GameObject();
-        fortest.AddComponent<Text>().text="test";
-        fortest.transform.parent = go.transform;
-
-        Debug.Log("Adding button for skill: " + skill+Time.fixedTime);
-        var instantiatedButton = Instantiate(menuCustomButtons);
-        instantiatedButton.GetComponentInChildren<Text>().fontStyle = FontStyle.Bold;
-        instantiatedButton.GetComponentInChildren<Text>().text = (skill.name);
-        instantiatedButton.gameObject.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-
-        Battle_UI.enabled = false;
-        Battle_UI.enabled = true;
-        //instantiatedButton.tag = skill.name;
-
-        instantiatedButton.transform.parent = mainContainerParent.transform;
-        menuButtonList.Add(instantiatedButton);
-        instantiatedButton.onClick.AddListener(delegate { useSelectedSkill(instantiatedButton.tag); });
-    }
-    public void addButtonTo_Listview()
-    {
-        //Debug.Log("Adding button for skill: " + skill);
-        var instantiatedButton = Instantiate(go.GetComponent<Button>());
-        instantiatedButton.GetComponentInChildren<Text>().fontStyle = FontStyle.Bold;
-        instantiatedButton.GetComponentInChildren<Text>().text = "asd";
-        //instantiatedButton.tag = skill.name;
-
-        instantiatedButton.transform.parent = mainContainerParent.transform;
+            instantiatedButton.transform.parent = mainContainerParent.transform;
+            instantiatedButton.onClick.AddListener(
+                delegate 
+                {
+                    useSelectedSkill(instantiatedButton.tag);
+                });
+            menuButtonList.Add(instantiatedButton);
+        }
+       
+        
     }
 
-        private void moveButtonsUp()
+    private void moveButtonsUp()
     {
         //transform position is not relative like this even tho the editor says 0,0 compared to parent
         //the 0,0 of screen is the bottom left corner even when you change the anchor
@@ -93,26 +83,31 @@ public class UI_Battle_Controller : MonoBehaviour
         if (getButton_y < getMask_y)
         {
             mainContainerParent.transform.position = new Vector2(mainContainerParent.transform.position.x, mainContainerParent.transform.position.y + menuButtomHeight);
+            verticalIndexerOfmenuButtonList++;
         }
-        
+
     }
     private void moveButtonsDown()
     {
-        
+
         if (mainContainerParent.transform.position.y > MaskForLocations.transform.position.y)
         {
             mainContainerParent.transform.position = new Vector2(mainContainerParent.transform.position.x, mainContainerParent.transform.position.y - menuButtomHeight);
+            verticalIndexerOfmenuButtonList--;
         }
         //No clue why -25 the container is 0 the selecter is -25 such as the button but here the container is compared
-        
+
     }
 
     public void selecterDown()
     {
         float getButton_y = MaskForLocations.transform.position.y - MaskForLocations.transform.GetComponent<RectTransform>().sizeDelta.y;
-        if (Selecter.transform.position.y - 25 > getButton_y)
+        float selecterBottom = Selecter.transform.position.y - Selecter.transform.GetComponent<RectTransform>().sizeDelta.y;
+        float containerBottom = mainContainerParent.transform.position.y - mainContainerParent.transform.GetComponent<RectTransform>().sizeDelta.y;
+        if (Selecter.transform.position.y - 25 > getButton_y && selecterBottom > containerBottom)
         {
             Selecter.transform.position = new Vector2(Selecter.transform.position.x, Selecter.transform.position.y - menuButtomHeight);
+            verticalIndexerOfmenuButtonList++;
         }
         else
         {
@@ -122,13 +117,15 @@ public class UI_Battle_Controller : MonoBehaviour
 
     public void selecterUp()
     {
-       if (Selecter.transform.position.y + 25 < MaskForLocations.transform.position.y)
+        if (Selecter.transform.position.y + 25 < MaskForLocations.transform.position.y)
         {
             Selecter.transform.position = new Vector2(Selecter.transform.position.x, Selecter.transform.position.y + menuButtomHeight);
+            verticalIndexerOfmenuButtonList--;
         }
         else
         {
             moveButtonsDown();
+            
         }
     }
 
@@ -136,5 +133,10 @@ public class UI_Battle_Controller : MonoBehaviour
     public void useSelectedSkill(string tag)
     {
         Debug.Log("Skill name that had been used: " + tag);
+    }
+
+    public void selectCurrentMenuPoint()
+    {
+        menuButtonList[verticalIndexerOfmenuButtonList].onClick.Invoke();
     }
 }

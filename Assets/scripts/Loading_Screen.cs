@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using System;
+using UnityEngine.SceneManagement;
 
 public class Loading_Screen : MonoBehaviour
 {
@@ -28,9 +28,14 @@ public class Loading_Screen : MonoBehaviour
     {
         DontDestroyOnLoad(this.gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        
+
         var temp = FindObjectOfType<Character_Script>();
         worldPos = FindObjectOfType<WorldPositionHolder>();
         character = temp.gameObject;
+
+        // UI_LoadingScreen.transform.position += new Vector3(0,0,-100);
     }
 
     // Update is called once per frame
@@ -40,7 +45,6 @@ public class Loading_Screen : MonoBehaviour
         if (counter > 1 && counter < 1.5f)
         {
             LoadingText.text = "Loading Done!";
-            // SceneManager.LoadScene("FirstScene");
         }
         else if (counter > timeToWait && alreadyEntered == false)
         {
@@ -81,5 +85,6 @@ public class Loading_Screen : MonoBehaviour
         alreadyEntered = false;
         LoadingText.text = "Loading..";
         UI_LoadingScreen.enabled = true;
+       // UI_LoadingScreen.transform.position += new Vector3(0, 0, -10);
     }
 }

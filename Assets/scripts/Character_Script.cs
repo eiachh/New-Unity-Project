@@ -35,7 +35,7 @@ public class Character_Script : MonoBehaviour
     void Awake()
     {
         var temp = FindObjectOfType<WorldPositionHolder>();
-        Vector3 vect = new Vector3(temp.x, temp.y, temp.z);
+        Vector3 vect = new Vector2(temp.x, temp.y);
         gameObject.transform.position = vect;
 
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -93,9 +93,10 @@ public class Character_Script : MonoBehaviour
             {
                 UI_Battle_Cont.selecterDown();
             }
-            if (Input.GetKeyDown(KeyCode.KeypadEnter))
+            if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return))
             {
                 Debug.Log("enter");
+                UI_Battle_Cont.selectCurrentMenuPoint();
             }
         }
         else
