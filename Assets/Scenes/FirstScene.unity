@@ -526,7 +526,7 @@ MonoBehaviour:
   currentSpeed: 0
   isAlive: 1
   typeOfBattler: player
-  SkillListPlaceholder: ideglenesen kell a fight hud csinalasahoz
+  SkillList: []
 --- !u!4 &499799051
 Transform:
   m_ObjectHideFlags: 0

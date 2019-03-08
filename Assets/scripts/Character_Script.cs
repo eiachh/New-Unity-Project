@@ -18,6 +18,7 @@ public class Character_Script : MonoBehaviour
     bool isInterracting = false;
     int openedInterractionIndex;
     Battle_Handler BattleH;
+    UI_Battle_Controller UI_Battle_Cont;
     bool characterInBattle = false;
 
     List<Interractable> interractablesUpClose = new List<Interractable>();
@@ -28,6 +29,8 @@ public class Character_Script : MonoBehaviour
         BattleH = FindObjectOfType<Battle_Handler>();
         BattleH.BattleStarted += Battle_Has_Started;
         BattleH.BattleFinished += Battle_Has_Finished;
+
+        UI_Battle_Cont = FindObjectOfType<UI_Battle_Controller>();
     }
     void Awake()
     {
@@ -80,31 +83,49 @@ public class Character_Script : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //interract button
-        if (Input.GetKeyDown(KeyCode.F))
+        if (characterInBattle)
         {
-            var item = decideFromInterractionList();
-            if (!isInterracting)
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
             {
-                if (item != null)
-                {
-                    isInterracting = item.Interract();
-                    rigigbody2D.velocity = new Vector2(0, 0);
-                }
+                UI_Battle_Cont.selecterUp();
             }
-            else
+            else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
             {
-                isInterracting = item.nextDialog();
+                UI_Battle_Cont.selecterDown();
+            }
+            if (Input.GetKeyDown(KeyCode.KeypadEnter))
+            {
+                Debug.Log("enter");
             }
         }
-        //cnacel interraction button
-        if (Input.GetKeyDown(KeyCode.Escape))
+        else
         {
-            if (isInterracting)
+            //interract button
+            if (Input.GetKeyDown(KeyCode.F))
             {
-                interractablesUpClose.Find(x => x.Equals(decideFromInterractionList())).interruptMessage();
+                var item = decideFromInterractionList();
+                if (!isInterracting)
+                {
+                    if (item != null)
+                    {
+                        isInterracting = item.Interract();
+                        rigigbody2D.velocity = new Vector2(0, 0);
+                    }
+                }
+                else
+                {
+                    isInterracting = item.nextDialog();
+                }
             }
-            isInterracting = false;
+            //cnacel interraction button
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (isInterracting)
+                {
+                    interractablesUpClose.Find(x => x.Equals(decideFromInterractionList())).interruptMessage();
+                }
+                isInterracting = false;
+            }
         }
     }
 
@@ -119,11 +140,8 @@ public class Character_Script : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (characterInBattle)
-        {
-            //future different controls for battle
-        }
-        else if (!isInterracting)
+        
+        if (!isInterracting)
         {
             float moveH = Input.GetAxis("Horizontal");
             float moveV = Input.GetAxis("Vertical");

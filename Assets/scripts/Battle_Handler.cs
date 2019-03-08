@@ -8,7 +8,7 @@ using System.Threading;
 
 public class Battle_Handler : MonoBehaviour
 {
-    public enum BattleWinner { Friendly,Enemy,Tie};
+    public enum BattleWinner { Friendly, Enemy, Tie };
 
     //         scene               questid
     List<Tuple<string, BattleWinner, string>> eventsFireAtLoad = new List<Tuple<string, BattleWinner, string>>();
@@ -17,7 +17,9 @@ public class Battle_Handler : MonoBehaviour
     {
         public int RecievedDamage { get; set; }
         public bool Cancel { get; set; }
-        public DamageRecievedEventArgs(int rec=0, bool cancel=false)
+        public Battle_Capability_Handler DamageSufferer;
+
+        public DamageRecievedEventArgs(int rec = 0, bool cancel = false)
         {
             RecievedDamage = rec;
             Cancel = cancel;
@@ -27,8 +29,8 @@ public class Battle_Handler : MonoBehaviour
     public class BattleFinishedEventArgs : EventArgs
     {
         public BattleWinner WinnerTeam { get; }
-        public string questID { get;}
-        public BattleFinishedEventArgs(BattleWinner bw,string qID)
+        public string questID { get; }
+        public BattleFinishedEventArgs(BattleWinner bw, string qID)
         {
             WinnerTeam = bw;
             questID = qID;
@@ -47,24 +49,26 @@ public class Battle_Handler : MonoBehaviour
     public Canvas BattleUI;
     public Text HpDisplayingText;
 
-    List<User_Battle_Unit> friendlies;
-    List<Enemy_Base> enemies;
+    List<User_Battle_Unit> friendlies = new List<User_Battle_Unit>();
+    List<Enemy_Base> enemies = new List<Enemy_Base>();
 
     Battle_Capability_Handler activeCharacter = null;
     Loading_Screen loading_Screen;
+    UI_Battle_Controller UI_Control;
 
     string questID;
     string OriginalScene_ToGoBackAtFinish;
     int speedCap = 100;
-    //counts back till the next turn can start it is happening so the user can see the hud changes turnEnding() uses it
+    //counts back till the next turn can start it is happening so the user can see the hud changes Proceed_TurnEnding() uses it
     float countBackForNextTurnStart = -1;
 
     void Start()
     {
         loading_Screen = FindObjectOfType<Loading_Screen>();
+        UI_Control = FindObjectOfType<UI_Battle_Controller>();
     }
 
-    //its retarded... BUT IT WORKS
+    //its retarded... BUT IT WORKS    (after turn Proceede_endTurn() countBackForNExtTurnStart set to something > 0 and that causes next turn to happen)
     void Update()
     {
         if (countBackForNextTurnStart > 0)
@@ -72,7 +76,7 @@ public class Battle_Handler : MonoBehaviour
             countBackForNextTurnStart -= Time.deltaTime;
         }
         //FIX THIS REEEE
-        if (countBackForNextTurnStart <= 0 && countBackForNextTurnStart!=-1)
+        if (countBackForNextTurnStart <= 0 && countBackForNextTurnStart != -1)
         {
             countBackForNextTurnStart = -1;
             nextTurn();
@@ -85,25 +89,28 @@ public class Battle_Handler : MonoBehaviour
     }
 
     //Battle without Loading BattleScene
-   public void initiateBattleAtLocation(List<User_Battle_Unit> _friendlies,List<Enemy_Base> _enemies,string _questID)
+    public void initiateBattleAtLocation(List<User_Battle_Unit> _friendlies, List<Enemy_Base> _enemies, string _questID)
     {
+        BattleUI.enabled = true;
+        emptyLists();
         friendlies = _friendlies;
         enemies = _enemies;
 
         questID = _questID;
 
-        BattleUI.enabled = true;
+        
 
         nextTurn();
         BattleStarted(this, EventArgs.Empty);
     }
 
     //Battle at custom BattleScene
-    public void initiateBattleAtPremadeArena(List<User_Battle_Unit> _friendlies, List<Enemy_Base> _enemies,string _questID,string _originalScene)
+    public void initiateBattleAtPremadeArena(List<User_Battle_Unit> _friendlies, List<Enemy_Base> _enemies, string _questID, string _originalScene)
     {
-
+        BattleUI.enabled = true;
+        emptyLists();
         loading_Screen.teleportTo("testscene");
-       // SceneManager.LoadScene("testscene");
+        // SceneManager.LoadScene("testscene");
 
         friendlies = _friendlies;
         enemies = _enemies;
@@ -111,18 +118,26 @@ public class Battle_Handler : MonoBehaviour
         questID = _questID;
         OriginalScene_ToGoBackAtFinish = _originalScene;
 
-        BattleUI.enabled = true;
+        
 
         nextTurn();
-        
+
         BattleStarted(this, EventArgs.Empty);
     }
+    private void emptyLists()
+    {
+        activeCharacter = null;
+        enemies.Clear();
+        friendlies.Clear();
 
+    }
     //handles next turn of the battle
     private void nextTurn()
     {
         
         activeCharacter = calculateNextCharactersTurn();
+        Debug.Log("UpdateUI " + activeCharacter);
+        UI_Control.UpdateUIWithBattler(activeCharacter);
         if (activeCharacter != null)
         {
             activeCharacter.currentSpeed = 0;
@@ -139,11 +154,11 @@ public class Battle_Handler : MonoBehaviour
     //by the time, increases the speed. When a character reaches the cap its their turn
     private Battle_Capability_Handler calculateNextCharactersTurn()
     {
-        Battle_Capability_Handler temp=null;
+        Battle_Capability_Handler temp = null;
 
         while (temp == null)
         {
-            
+
             temp = checkIfSomebodyHasFull();
             if (temp != null)
             {
@@ -169,13 +184,13 @@ public class Battle_Handler : MonoBehaviour
 
     private Battle_Capability_Handler checkIfSomebodyHasFull()
     {
-        var retVal = (Battle_Capability_Handler) friendlies.Find(x => x.currentSpeed >= 100);
+        var retVal = (Battle_Capability_Handler)friendlies.Find(x => x.currentSpeed >= 100);
         if (retVal != null)
         {
             return retVal;
         }
         retVal = (Battle_Capability_Handler)enemies.Find(x => x.currentSpeed >= 100);
-        if (retVal !=null)
+        if (retVal != null)
         {
             return retVal;
         }
@@ -193,38 +208,60 @@ public class Battle_Handler : MonoBehaviour
 
     public void Button2_Clicked()
     {
-        RecieveDamage_ToCurrentlyActivePartyMember(3);
-        turnEnding();
+        ApplyDamage_ToCurrentlyActivePartyMember(3);
+        Proceed_TurnEnding();
     }
 
     //returns If player died to the dmg recieved
-    public bool RecieveDamage_ToCurrentlyActivePartyMember(int amount)
+    public bool ApplyDamage_ToCurrentlyActivePartyMember(int damage)
     {
         DamageRecievedEventArgs e = new DamageRecievedEventArgs();
+        e.DamageSufferer = activeCharacter;
         if (DamageRecieved != null)
         {
             DamageRecieved(this, e);
         }
-        if (!e.Cancel)
+        if (!e.Cancel || activeCharacter.isAlive)
         {
-            activeCharacter.CurrentHealth = activeCharacter.CurrentHealth - amount;
+            activeCharacter.CurrentHealth = activeCharacter.CurrentHealth - CalcDamage(activeCharacter,damage);
         }
+        checkIfStillAlive(activeCharacter);
         
-        if (activeCharacter.CurrentHealth <= 0)
-        {
-            activeCharacter.isAlive = false;
-            return false;
-        }
         refreshIndicatorBars();
         return true;
     }
 
-    private void refreshIndicatorBars()
+    public void ApplyDamage_ToEnemies(List<Enemy_Base> _enemies,int damage)
     {
-        HpDisplayingText.text = activeCharacter.CurrentHealth.ToString();
+        foreach (var sufferer in _enemies)
+        {
+            DamageRecievedEventArgs e = new DamageRecievedEventArgs();
+            e.DamageSufferer = sufferer;
+            if (DamageRecieved != null)
+            {
+                DamageRecieved(this, e);
+            }
+            if (!e.Cancel || sufferer.isAlive)
+            {
+                sufferer.CurrentHealth -= CalcDamage(sufferer, damage);
+            }
+            checkIfStillAlive(activeCharacter);
+
+            refreshIndicatorBars();
+        }
     }
 
-    private void turnEnding()
+    private void refreshIndicatorBars()
+    {
+        
+
+        UI_Control.UpdateUIBars(activeCharacter.CurrentHealth);
+
+        //placeholder for other updates
+    }
+
+    //This should be called by skills
+    public void Proceed_TurnEnding()
     {
         refreshIndicatorBars();
         countBackForNextTurnStart = 1.5f;
@@ -242,8 +279,26 @@ public class Battle_Handler : MonoBehaviour
 
     }
 
+    private int CalcDamage(Battle_Capability_Handler _character, int damage)
+    {
+        return damage;
+    }
 
-
+    private bool checkIfStillAlive(Battle_Capability_Handler _character)
+    {
+        if (_character.CurrentHealth>0 && _character.isAlive)
+        {
+            return true;
+        }
+        else
+        {
+            if (_character.isAlive == true)
+            {
+                _character.isAlive = false;
+            }
+            return false;
+        }
+    }
 
 
 

@@ -24,8 +24,11 @@ public class Battle_Capability_Handler : MonoBehaviour
     //use lowercase
     [Tooltip("Has to decide if it's not set the character will be ignored! Choose one of the options!")]
     public string typeOfBattler = "player/enemy";
+
+    [Tooltip("The skills of the character.")]
+    public List<Skill_Base> SkillList = new List<Skill_Base>();
     
 
 
-    public string SkillListPlaceholder="ideglenesen kell a fight hud csinalasahoz";
+    //public string SkillListPlaceholder="ideglenesen kell a fight hud csinalasahoz";
 }
