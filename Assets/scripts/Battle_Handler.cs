@@ -82,7 +82,7 @@ public class Battle_Handler : MonoBehaviour
         if (countBackForNextTurnStart <= 0 && countBackForNextTurnStart != -1)
         {
             countBackForNextTurnStart = -1;
-            nextTurn();
+            nextTurn(false);
         }
     }
 
@@ -103,8 +103,8 @@ public class Battle_Handler : MonoBehaviour
 
         
 
-        nextTurn();
-        BattleStarted(this, EventArgs.Empty);
+        //nextTurn();
+        //BattleStarted(this, EventArgs.Empty);
     }
 
     //Battle at custom BattleScene
@@ -129,7 +129,7 @@ public class Battle_Handler : MonoBehaviour
         if (battleSceneName == scene.name)
         {
             Debug.Log("volt");
-            nextTurn();
+            nextTurn(true);
             BattleStarted(this, EventArgs.Empty);
         }
     }
@@ -141,9 +141,14 @@ public class Battle_Handler : MonoBehaviour
 
     }
     //handles next turn of the battle
-    private void nextTurn()
+    private void nextTurn(bool battleStartingTurn)
     {
-        
+        if (battleStartingTurn)
+        {
+            //main char doesnt have recttransform
+            var widthHeight = friendlies[0].transform.GetComponent<RectTransform>().sizeDelta.x;
+            UI_Control.setupStartCharacterLayout(enemies, friendlies, widthHeight);
+        }
         activeCharacter = calculateNextCharactersTurn();
         Debug.Log("UpdateUI " + activeCharacter);
         UI_Control.UpdateUIWithBattler(activeCharacter);

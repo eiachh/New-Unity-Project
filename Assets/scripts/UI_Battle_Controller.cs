@@ -9,6 +9,7 @@ public class UI_Battle_Controller : MonoBehaviour
     public Image skillListView;
     public Image MaskForLocations;
     public Image Selecter;
+    public Image playArea;
 
     public Image mainContainerParent;
     public Button menuCustomButton;
@@ -23,6 +24,8 @@ public class UI_Battle_Controller : MonoBehaviour
 
     List<Enemy_Base> enemiesForVisual = new List<Enemy_Base>();
     List<User_Battle_Unit> friendliesForVisual = new List<User_Battle_Unit>();
+
+    int characterPlacementAlreadyTakenSpace = 0;
 
 
     void Start()
@@ -161,6 +164,66 @@ public class UI_Battle_Controller : MonoBehaviour
         return null;
     }
 
+    public void setupStartCharacterLayout(List<Enemy_Base> _enemies,List<User_Battle_Unit> _friendlies,float characterWidthHeight)
+    {
+        enemiesForVisual.Clear();
+        enemiesForVisual.AddRange(_enemies);
+        friendliesForVisual.Clear();
+        friendliesForVisual.AddRange(_friendlies);
+        System.Random r = new System.Random();
+
+        //iterates through the enemies and friendlies list randomly
+        int enemyListIndex = 0;
+        int friendlyListIndex = 0;
+        //                                      -2 cause count gives back the amount not the index from 0
+        /*while (enemyListIndex+friendlyListIndex <= (enemiesForVisual.Count+friendliesForVisual.Count) -2)
+        {
+            var next = r.Next(0, 2);
+            //randomly decides if next placing is enemy or friendly
+            if (next == 0)
+            {
+                
+                Vector2 vectToSet = getPreferedLocationLineByLineMethod(characterWidthHeight);
+                //if vect.x == -1 that means there is no more space on the battlefield so need a new method (all the rows contain at lest 1 character)
+                // (one row could contain multiple character its just not set to check)
+                if (vectToSet.x!=-1)
+                {
+                    friendliesForVisual[friendlyListIndex].transform.position = vectToSet;
+                    friendlyListIndex++;
+                }
+                else
+                {
+                    //Has to finish If there is not enough space on the battlefield here
+                }
+            }
+            //randomly decides if next placing is enemy or friendly
+            else if (next ==1)
+            {
+
+            }
+        }*/
+    }
+
+    //Returns -1,-1 if there is no space left
+    public Vector2 getPreferedLocationLineByLineMethod(float characterWidthHeight)
+    {
+        //so the object not exaactly on top of each other
+        characterPlacementAlreadyTakenSpace += 20;
+
+        var randXRightSide = Mathf.RoundToInt(playArea.transform.GetComponent<RectTransform>().sizeDelta.x - characterWidthHeight);
+        System.Random randomX = new System.Random();
+
+        if (characterPlacementAlreadyTakenSpace + characterWidthHeight < playArea.transform.GetComponent<RectTransform>().sizeDelta.y)
+        {
+            Vector2 vect = new Vector2(randomX.Next(0, randXRightSide), characterPlacementAlreadyTakenSpace);
+            characterPlacementAlreadyTakenSpace += Mathf.RoundToInt(characterWidthHeight);
+            return vect;
+        }
+        else
+        {
+            return new Vector2(-1,-1);
+        }
+    }
 
     private void setupUIForEnemySelect()
     {
