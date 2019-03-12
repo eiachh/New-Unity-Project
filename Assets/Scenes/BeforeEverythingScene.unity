@@ -1816,6 +1816,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Battle_UI: {fileID: 1495297599}
+  skillListView: {fileID: 949373315}
   MaskForLocations: {fileID: 267723746}
   Selecter: {fileID: 1964186461}
   mainContainerParent: {fileID: 1769987385}

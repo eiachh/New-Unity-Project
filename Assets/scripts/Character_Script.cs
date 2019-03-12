@@ -142,7 +142,7 @@ public class Character_Script : MonoBehaviour
     void FixedUpdate()
     {
         
-        if (!isInterracting)
+        if (!isInterracting && !characterInBattle)
         {
             float moveH = Input.GetAxis("Horizontal");
             float moveV = Input.GetAxis("Vertical");

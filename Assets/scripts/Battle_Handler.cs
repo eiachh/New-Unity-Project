@@ -288,6 +288,16 @@ public class Battle_Handler : MonoBehaviour
 
     }
 
+    public void playerSelectedSkillToUse(Skill_Base skillRef)
+    {
+        List<Enemy_Base> targettedEnemies = new List<Enemy_Base>();
+        if (skillRef.SelectionType == Skill_Base.SkillSelectionType.SingleTarget)
+        {
+            targettedEnemies.Clear();
+           targettedEnemies.Add(UI_Control.selectSingleEnemy());
+        }
+    }
+
     private int CalcDamage(Battle_Capability_Handler _character, int damage)
     {
         return damage;
@@ -308,5 +318,7 @@ public class Battle_Handler : MonoBehaviour
             return false;
         }
     }
+
+
 
 }

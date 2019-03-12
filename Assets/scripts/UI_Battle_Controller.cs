@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class UI_Battle_Controller : MonoBehaviour
 {
     public Canvas Battle_UI;
+    public Image skillListView;
     public Image MaskForLocations;
     public Image Selecter;
 
@@ -18,12 +19,17 @@ public class UI_Battle_Controller : MonoBehaviour
 
     public Text HealthText;
 
+    Battle_Handler Battle_H;
+
+    List<Enemy_Base> enemiesForVisual = new List<Enemy_Base>();
+    List<User_Battle_Unit> friendliesForVisual = new List<User_Battle_Unit>();
+
 
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
         menuButtomHeight = menuCustomButton.GetComponent<RectTransform>().sizeDelta.y;
-
+        Battle_H = FindObjectOfType<Battle_Handler>();
     }
 
     public void UpdateUIWithBattler(Battle_Capability_Handler battler)
@@ -47,10 +53,14 @@ public class UI_Battle_Controller : MonoBehaviour
         {
             menuCustomButton.GetComponentInChildren<Text>().fontStyle = FontStyle.Bold;
             menuCustomButton.GetComponentInChildren<Text>().text = (skill.name);
+
+            menuCustomButton.gameObject.AddComponent<Button_SkillRef>();
+            menuCustomButton.gameObject.GetComponent<Button_SkillRef>().SkillAttached = skill;
+
             menuCustomButton.onClick.AddListener(
                 delegate 
                 {
-                    useSelectedSkill(menuCustomButton.tag);
+                    useSelectedSkill(menuCustomButton.gameObject.GetComponent<Button_SkillRef>().SkillAttached);
                 });
             menuButtonList.Add(menuCustomButton);
         }
@@ -60,13 +70,14 @@ public class UI_Battle_Controller : MonoBehaviour
             instantiatedButton.GetComponentInChildren<Text>().fontStyle = FontStyle.Bold;
             instantiatedButton.GetComponentInChildren<Text>().text = (skill.name);
 
-            //instantiatedButton.tag = skill.name;
+            instantiatedButton.gameObject.AddComponent<Button_SkillRef>();
+            instantiatedButton.gameObject.GetComponent<Button_SkillRef>().SkillAttached = skill;
 
             instantiatedButton.transform.parent = mainContainerParent.transform;
             instantiatedButton.onClick.AddListener(
                 delegate 
                 {
-                    useSelectedSkill(instantiatedButton.tag);
+                    useSelectedSkill(instantiatedButton.gameObject.GetComponent<Button_SkillRef>().SkillAttached);
                 });
             menuButtonList.Add(instantiatedButton);
         }
@@ -130,13 +141,31 @@ public class UI_Battle_Controller : MonoBehaviour
     }
 
     //assigned to button Click() on instantiation at addbuttonto_listview(Skill_Base skill)
-    public void useSelectedSkill(string tag)
+    public void useSelectedSkill(Skill_Base skillRef)
     {
-        Debug.Log("Skill name that had been used: " + tag);
+        Battle_H.playerSelectedSkillToUse(skillRef);
     }
 
     public void selectCurrentMenuPoint()
     {
         menuButtonList[verticalIndexerOfmenuButtonList].onClick.Invoke();
     }
+
+    public Enemy_Base selectSingleEnemy()
+    {
+        setupUIForEnemySelect();
+
+
+
+        //temp #Fix
+        return null;
+    }
+
+
+    private void setupUIForEnemySelect()
+    {
+        skillListView.gameObject.SetActive(false);
+        //skillListView.enabled = false;
+    }
+
 }
