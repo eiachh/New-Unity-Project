@@ -176,7 +176,7 @@ public class UI_Battle_Controller : MonoBehaviour
         int enemyListIndex = 0;
         int friendlyListIndex = 0;
         //                                      -2 cause count gives back the amount not the index from 0
-        /*while (enemyListIndex+friendlyListIndex <= (enemiesForVisual.Count+friendliesForVisual.Count) -2)
+        while (enemyListIndex+friendlyListIndex <= (enemiesForVisual.Count+friendliesForVisual.Count) -2)
         {
             var next = r.Next(0, 2);
             //randomly decides if next placing is enemy or friendly
@@ -199,9 +199,19 @@ public class UI_Battle_Controller : MonoBehaviour
             //randomly decides if next placing is enemy or friendly
             else if (next ==1)
             {
-
+                Vector2 vectToSet = getPreferedLocationLineByLineMethod(characterWidthHeight);
+                //if there is enough space on the battlefield
+                if (vectToSet.x != -1)
+                {
+                    enemiesForVisual[enemyListIndex].transform.position = vectToSet;
+                    enemyListIndex++;
+                }
+                else
+                {
+                    //Has to finish If there is not enough space on the battlefield here
+                }
             }
-        }*/
+        }
     }
 
     //Returns -1,-1 if there is no space left
